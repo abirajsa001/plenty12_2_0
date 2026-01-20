@@ -900,15 +900,15 @@ class PaymentService
     *
     * @return string
     */
-    public function getRedirectPaymentUrl()
+    public function getProcessPaymentUrl()
     {
         $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/redirectPayment';	
-        $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl UrlQuery ', UrlQuery::shouldAppendTrailingSlash());
+        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl UrlQuery ', UrlQuery::shouldAppendTrailingSlash());
         if (UrlQuery::shouldAppendTrailingSlash()) {
             $path .= '/';
-            $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl shouldAppendTrailingSlash ', $path);
+            $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl shouldAppendTrailingSlash ', $path);
         }
-        $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl path ', $path);    
+        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl path ', $path);    
         return $path;
     }
     
