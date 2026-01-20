@@ -914,10 +914,10 @@ class PaymentService
         // 2 = Always remove (Immer entfernen)
         $trailingSlashSetting = $config->urlTrailingSlash; 
         $this->getLogger(__METHOD__)->error('Novalnet::trailingSlashSetting path ', $trailingSlashSetting);
-        if ($trailingSlashSetting == 1) {
+        if ($trailingSlashSetting == 2) {
             // Always append
             $path = rtrim($path, '/') . '/';
-        } elseif ($trailingSlashSetting == 2) {
+        } elseif ($trailingSlashSetting == 1) {
             // Always remove
             $path = rtrim($path, '/');
         }
