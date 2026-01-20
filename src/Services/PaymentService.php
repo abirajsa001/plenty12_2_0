@@ -28,6 +28,7 @@ use Plenty\Plugin\Log\Loggable;
 use IO\Extensions\Constants\ShopUrls;
 use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
 use IO\Helper\Configuration;
+use Plenty\Modules\Webshop\Helper\UrlQuery;
 
 /**
  * Class PaymentService
@@ -898,57 +899,19 @@ class PaymentService
     *
     * @return string
     */
-    public function getProcessPaymentUrl(): string
+    public function getProcessPaymentUrl()
     {
-        /** @var Configuration $ioConfig */
-        $ioConfig = pluginApp(Configuration::class);
-    
-        // Try all known keys (Plenty changed this multiple times)
-        $trailingSlashSetting =
-            $ioConfig->get('routing.urlTrailingSlash') ??
-            $ioConfig->get('routing.trailingSlash') ??
-            $ioConfig->get('urlTrailingSlash') ??
-            null;
-    
-        // Build base URL
-        $webstoreConfig = $this->webstoreHelper->getCurrentWebstoreConfiguration();
-        $domain   = rtrim($webstoreConfig->domainSsl, '/');
-        $language = $this->sessionStorage->getLocaleSettings()->language;
-    
-        $path = $domain . '/' . $language . '/payment/novalnet/processPayment';
-    
-        /**
-         * trailingSlashSetting values:
-         * 0 = do nothing
-         * 1 = remove slash
-         * 2 = append slash
-         */
-        if ((int)$trailingSlashSetting === 2) {
-            // Always append
-            $path = rtrim($path, '/') . '/';
-            $this->getLogger(__METHOD__)->error('Novalnet::Alwaysappend path ', $path);
-        } elseif ((int)$trailingSlashSetting === 1) {
-            // Always remove
-            $this->getLogger(__METHOD__)->error('Novalnet::AlwaysRemove path ', $path);
-            $path = rtrim($path, '/');
-        } else {
-            $this->getLogger(__METHOD__)->error('Novalnet::DonotAdjust path ', $path);
-            // Safe default (IO default)
-            $path = rtrim($path, '/');
+        $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment';
+        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl path ', $path);
+        if (UrlQuery::shouldAppendTrailingSlash()) {
+            $path .= '/';
+            $this->getLogger(__METHOD__)->error('Novalnet::AlwaysAppend path ', $path);
         }
-    
-        // Debug log (remove after verification)
-        $this->getLogger(__METHOD__)->info('Novalnet::getProcessPaymentUrl', [
-            'trailingSlashSetting' => $trailingSlashSetting,
-            'finalUrl' => $path
-        ]);
-    
+        $this->getLogger(__METHOD__)->error('Novalnet::Final path ', $path);
         return $path;
     }
     
 
-
-	
     /**
      * Collecting the Credit Card for the initial authentication call to PSP
      *
