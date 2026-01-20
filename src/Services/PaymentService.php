@@ -27,7 +27,7 @@ use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
 use IO\Extensions\Constants\ShopUrls;
 use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
-use Plenty\Modules\Webshop\Helper\UrlQuery;
+use Plenty\Modules\Webshop\Helpers\UrlQuery;
 use IO\Helper\Configuration;
 
 
@@ -900,14 +900,16 @@ class PaymentService
     *
     * @return string
     */
-    public function getProcessPaymentUrl()
+    public function getRedirectPaymentUrl()
     {
-        $url = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl
-        . '/'
-        . $this->sessionStorage->getLocaleSettings()->language
-        . '/payment/novalnet/processPayment';
-
-        return rtrim($url, '/');
+        $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/redirectPayment';	
+        $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl UrlQuery ', UrlQuery::shouldAppendTrailingSlash());
+        if (UrlQuery::shouldAppendTrailingSlash()) {
+            $path .= '/';
+            $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl shouldAppendTrailingSlash ', $path);
+        }
+        $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl path ', $path);    
+        return $path;
     }
     
 
