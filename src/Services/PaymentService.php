@@ -913,7 +913,7 @@ class PaymentService
         // 1 = Always append (Immer anhängen)
         // 2 = Always remove (Immer entfernen)
         $trailingSlashSetting = $config->urlTrailingSlash; 
-    
+        $this->getLogger(__METHOD__)->error('Novalnet::trailingSlashSetting path ', $trailingSlashSetting);
         if ($trailingSlashSetting == 1) {
             // Always append
             $path = rtrim($path, '/') . '/';
