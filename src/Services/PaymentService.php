@@ -27,6 +27,7 @@ use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
 use IO\Extensions\Constants\ShopUrls;
 use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
+use IO\Helper\Configuration;
 
 /**
  * Class PaymentService
@@ -899,36 +900,43 @@ class PaymentService
     */
     public function getProcessPaymentUrl()
     {
-        $webstoreConfigRepo = pluginApp(WebstoreConfigurationRepositoryContract::class);
-        $webstoreId = $this->webstoreHelper->getCurrentWebstoreConfiguration()->webstoreId;
-        $config = $webstoreConfigRepo->findByPlentyId($webstoreId);
-        $this->getLogger(__METHOD__)->error('Novalnet::webstoreId path ', $webstoreId);
-        $this->getLogger(__METHOD__)->error('Novalnet::config path ', $config);
-        // Get basic path
-        $domain = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
+        /** @var Configuration $ioConfig */
+        $ioConfig = pluginApp(Configuration::class);
+    
+        // 0 = do nothing
+        // 1 = remove trailing slash
+        // 2 = append trailing slash
+        $trailingSlashSetting = (int)$ioConfig->get('routing.urlTrailingSlash');
+    
+        $domain   = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
         $language = $this->sessionStorage->getLocaleSettings()->language;
+    
         $path = $domain . '/' . $language . '/payment/novalnet/processPayment';
     
-        // Check the specific URL structure setting for trailing slashes
-        // 0 = Do not adjust (Nicht anpassen)
-        // 1 = Always append (Immer anhängen)
-        // 2 = Always remove (Immer entfernen)
-        $trailingSlashSetting = $config->urlTrailingSlash; 
         $this->getLogger(__METHOD__)->error('Novalnet::trailingSlashSetting path ', $trailingSlashSetting);
-        if ($trailingSlashSetting == 2) {
+        $this->getLogger(__METHOD__)->error('Novalnet::config path ', $path);
+
+        if ($trailingSlashSetting === 2) {
             // Always append
             $path = rtrim($path, '/') . '/';
             $this->getLogger(__METHOD__)->error('Novalnet::AlwaysAppend path ', $path);
-        } elseif ($trailingSlashSetting == 1) {
+        } elseif ($trailingSlashSetting === 1) {
             // Always remove
             $path = rtrim($path, '/');
             $this->getLogger(__METHOD__)->error('Novalnet::AlwaysRemove path ', $path);
         }
-        // For '0' (Do not adjust), return the path as defined by your route
-        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl path ', $path);
+    
+        $this->getLogger(__METHOD__)->info(
+            'Novalnet::getProcessPaymentUrl',
+            [
+                'trailingSlashSetting' => $trailingSlashSetting,
+                'url' => $path
+            ]
+        );
+    
         return $path;
-        // return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment';
     }
+    
 
 
 	
