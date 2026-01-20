@@ -902,14 +902,12 @@ class PaymentService
     */
     public function getProcessPaymentUrl()
     {
-        $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment';
-        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl path ', $path);
-        if (UrlQuery::shouldAppendTrailingSlash()) {
-            $path .= '/';
-            $this->getLogger(__METHOD__)->error('Novalnet::AlwaysAppend path ', $path);
-        }
-        $this->getLogger(__METHOD__)->error('Novalnet::Final path ', $path);
-        return $path;
+        $url = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl
+        . '/'
+        . $this->sessionStorage->getLocaleSettings()->language
+        . '/payment/novalnet/processPayment';
+
+        return rtrim($url, '/');
     }
     
 
