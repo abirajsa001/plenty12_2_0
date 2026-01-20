@@ -902,7 +902,8 @@ class PaymentService
         $webstoreConfigRepo = pluginApp(WebstoreConfigurationRepositoryContract::class);
         $webstoreId = $this->webstoreHelper->getCurrentWebstoreConfiguration()->webstoreId;
         $config = $webstoreConfigRepo->findByPlentyId($webstoreId);
-    
+        $this->getLogger(__METHOD__)->error('Novalnet::webstoreId path ', $webstoreId);
+        $this->getLogger(__METHOD__)->error('Novalnet::config path ', $config);
         // Get basic path
         $domain = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
         $language = $this->sessionStorage->getLocaleSettings()->language;
@@ -917,9 +918,11 @@ class PaymentService
         if ($trailingSlashSetting == 2) {
             // Always append
             $path = rtrim($path, '/') . '/';
+            $this->getLogger(__METHOD__)->error('Novalnet::AlwaysAppend path ', $path);
         } elseif ($trailingSlashSetting == 1) {
             // Always remove
             $path = rtrim($path, '/');
+            $this->getLogger(__METHOD__)->error('Novalnet::AlwaysRemove path ', $path);
         }
         // For '0' (Do not adjust), return the path as defined by your route
         $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl path ', $path);
