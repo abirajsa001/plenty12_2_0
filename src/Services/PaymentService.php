@@ -898,41 +898,50 @@ class PaymentService
     *
     * @return string
     */
-    public function getProcessPaymentUrl()
+    public function getProcessPaymentUrl(): string
     {
         /** @var Configuration $ioConfig */
         $ioConfig = pluginApp(Configuration::class);
     
-        // 0 = do nothing
-        // 1 = remove trailing slash
-        // 2 = append trailing slash
-        $trailingSlashSetting = (int)$ioConfig->get('routing.urlTrailingSlash');
+        // Try all known keys (Plenty changed this multiple times)
+        $trailingSlashSetting =
+            $ioConfig->get('routing.urlTrailingSlash') ??
+            $ioConfig->get('routing.trailingSlash') ??
+            $ioConfig->get('urlTrailingSlash') ??
+            null;
     
-        $domain   = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
+        // Build base URL
+        $webstoreConfig = $this->webstoreHelper->getCurrentWebstoreConfiguration();
+        $domain   = rtrim($webstoreConfig->domainSsl, '/');
         $language = $this->sessionStorage->getLocaleSettings()->language;
     
         $path = $domain . '/' . $language . '/payment/novalnet/processPayment';
     
-        $this->getLogger(__METHOD__)->error('Novalnet::trailingSlashSetting path ', $trailingSlashSetting);
-        $this->getLogger(__METHOD__)->error('Novalnet::config path ', $path);
-
-        if ($trailingSlashSetting === 2) {
+        /**
+         * trailingSlashSetting values:
+         * 0 = do nothing
+         * 1 = remove slash
+         * 2 = append slash
+         */
+        if ((int)$trailingSlashSetting === 2) {
             // Always append
             $path = rtrim($path, '/') . '/';
-            $this->getLogger(__METHOD__)->error('Novalnet::AlwaysAppend path ', $path);
-        } elseif ($trailingSlashSetting === 1) {
+            $this->getLogger(__METHOD__)->error('Novalnet::Alwaysappend path ', $path);
+        } elseif ((int)$trailingSlashSetting === 1) {
             // Always remove
-            $path = rtrim($path, '/');
             $this->getLogger(__METHOD__)->error('Novalnet::AlwaysRemove path ', $path);
+            $path = rtrim($path, '/');
+        } else {
+            $this->getLogger(__METHOD__)->error('Novalnet::DonotAdjust path ', $path);
+            // Safe default (IO default)
+            $path = rtrim($path, '/');
         }
     
-        $this->getLogger(__METHOD__)->info(
-            'Novalnet::getProcessPaymentUrl',
-            [
-                'trailingSlashSetting' => $trailingSlashSetting,
-                'url' => $path
-            ]
-        );
+        // Debug log (remove after verification)
+        $this->getLogger(__METHOD__)->info('Novalnet::getProcessPaymentUrl', [
+            'trailingSlashSetting' => $trailingSlashSetting,
+            'finalUrl' => $path
+        ]);
     
         return $path;
     }
