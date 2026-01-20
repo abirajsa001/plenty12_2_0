@@ -27,8 +27,9 @@ use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
 use IO\Extensions\Constants\ShopUrls;
 use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
-use IO\Helper\Configuration;
 use Plenty\Modules\Webshop\Helper\UrlQuery;
+use IO\Helper\Configuration;
+
 
 /**
  * Class PaymentService
