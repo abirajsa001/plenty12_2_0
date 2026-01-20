@@ -25,6 +25,7 @@ use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
 use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
+use IO\Extensions\Constants\ShopUrls;
 
 /**
  * Class PaymentService
@@ -895,11 +896,32 @@ class PaymentService
     *
     * @return string
     */
-    public function getProcessPaymentUrl()
-    {
-        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment';
-    }
+	public function getProcessPaymentUrl()
+	{
+	    $domain = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
+	    $language = $this->sessionStorage->getLocaleSettings()->language;
+	    $path = $domain . '/' . $language . '/payment/novalnet/processPayment';
+	
+	    /** @var ShopUrls $shopUrls */
+	    $shopUrls = pluginApp(ShopUrls::class);
+	
+	    // This property respects 'Always append', 'Always remove', and 'Do not adjust' 
+	    // by checking the actual system configuration for the current webstore.
+	    if ($shopUrls->appendTrailingSlash) {
+	        $path = rtrim($path, '/') . '/';
+	    } else {
+	        $path = rtrim($path, '/');
+	    }
+		$this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl path ', $path);
+	    return $path;
+		// return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment';
+	}
 
+
+
+
+
+	
     /**
      * Collecting the Credit Card for the initial authentication call to PSP
      *
