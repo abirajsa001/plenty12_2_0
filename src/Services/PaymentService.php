@@ -903,7 +903,7 @@ class PaymentService
     public function getProcessPaymentUrl()
     {
         $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment';	
-        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl Post', $path);
+        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl Postdata', $path);
         return $path;
     }
     
