@@ -29,7 +29,7 @@ use IO\Extensions\Constants\ShopUrls;
 use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
 use Plenty\Modules\Webshop\Helpers\UrlQuery;
 use IO\Helper\Configuration;
-
+use Plenty\Plugin\Application;
 
 /**
  * Class PaymentService
