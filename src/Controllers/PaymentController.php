@@ -157,6 +157,13 @@ class PaymentController extends Controller
         }
     }
 
+    public function processPaymentPost(Request $request)
+    {
+    $this->getLogger(__METHOD__)->error('Novalnet::processPaymentPost Post', $request);
+    // Redirect to GET endpoint (SEO redirects OK here)
+    return redirect('/payment/novalnet/processPayment');
+    }
+
     /**
      * Process the Form payment
      *
