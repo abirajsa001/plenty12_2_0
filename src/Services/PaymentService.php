@@ -903,11 +903,10 @@ class PaymentService
     public function getProcessPaymentUrl()
     {
         $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment';	
-        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl paths', $path);    
+        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl paths', $path);
         return $path;
     }
     
-
     /**
      * Collecting the Credit Card for the initial authentication call to PSP
      *
