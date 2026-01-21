@@ -26,7 +26,7 @@ use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
 use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
 use IO\Extensions\Constants\ShopUrls;
-use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
+use Plenty\Modules\Webshop\Contracts\WebstoreConfigurationRepositoryContract;
 use Plenty\Modules\Webshop\Helpers\UrlQuery;
 use IO\Helper\Configuration;
 use Plenty\Plugin\Application;
@@ -921,12 +921,12 @@ class PaymentService
             json_decode(json_encode($webconfig), true)
         );
 
-        // $webstoreConfigurationRepository = pluginApp(WebstoreConfigurationRepositoryContract::class);
-        // $webstoreConfiguration = $webstoreConfigurationRepository->getWebstoreConfiguration();
-        // $this->getLogger(__METHOD__)->error(
-        //     'Novalnet::webstoreConfiguration_full',
-        //     json_decode(json_encode($webstoreConfiguration), true)
-        // );
+        $webstoreConfigurationRepository = pluginApp(WebstoreConfigurationRepositoryContract::class);
+        $webstoreConfiguration = $webstoreConfigurationRepository->getWebstoreConfiguration();
+        $this->getLogger(__METHOD__)->error(
+            'Novalnet::webstoreConfiguration_full',
+            json_decode(json_encode($webstoreConfiguration), true)
+        );
         
         // Get basic path
         $domain = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
