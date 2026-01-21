@@ -905,8 +905,27 @@ class PaymentService
         $webstoreConfigRepo = pluginApp(WebstoreConfigurationRepositoryContract::class);
         $webstoreId = pluginApp(Application::class)->getWebstoreId();
         $config = $webstoreConfigRepo->findByPlentyId($webstoreId);
-        $this->getLogger(__METHOD__)->error('Novalnet::webstoreId path ', $webstoreId);
-        $this->getLogger(__METHOD__)->error('Novalnet::config path ', $config);
+        $this->getLogger(__METHOD__)->error(
+            'Novalnet::config path and webstoreID',
+            [
+                'webstoreId' => $webstoreId,
+                'config' => $config,
+                'configPath' => json_decode(json_encode($config), true)
+            ]
+        );
+        $webconfig = $this->webstoreHelper->getCurrentWebstoreConfiguration();
+        $this->getLogger(__METHOD__)->error(
+            'Novalnet::webstoreConfig_full',
+            json_decode(json_encode($webconfig), true)
+        );
+
+        // $webstoreConfigurationRepository = pluginApp(WebstoreConfigurationRepositoryContract::class);
+        // $webstoreConfiguration = $webstoreConfigurationRepository->getWebstoreConfiguration();
+        // $this->getLogger(__METHOD__)->error(
+        //     'Novalnet::webstoreConfiguration_full',
+        //     json_decode(json_encode($webstoreConfiguration), true)
+        // );
+        
         // Get basic path
         $domain = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
         $language = $this->sessionStorage->getLocaleSettings()->language;
