@@ -177,7 +177,7 @@ class NovalnetServiceProvider extends ServiceProvider
                     } elseif($paymentKey == 'NOVALNET_CC') {
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetCc',
                         [
-                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
+                            'nnPaymentProcessUrl'   => "payment/novalnet/processPayment",
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'transactionData'       => $paymentService->getCreditCardAuthenticationCallData($basketRepository->load(), strtolower($paymentKey)),

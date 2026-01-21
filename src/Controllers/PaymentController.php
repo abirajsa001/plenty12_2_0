@@ -156,13 +156,7 @@ class PaymentController extends Controller
             }
         }
     }
-
-    public function processPaymentPost(Request $request, Response $response)
-    {
-    // Redirect to GET endpoint (SEO redirects OK here)
-    return $response->redirectTo('/payment/novalnet/processPayment');
-    }
-
+    
     /**
      * Process the Form payment
      *
