@@ -900,10 +900,31 @@ class PaymentService
     *
     * @return string
     */
-    public function getProcessPaymentUrl()
+    public function getProcessPaymentUrl(): string
     {
-        $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPaymentPost';	
-        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl Postdata', $path);
+        /** @var Configuration $ioConfig */
+        $ioConfig = pluginApp(Configuration::class);
+    
+        // Try all known keys (Plenty inconsistency fix)
+        $trailingSlashSetting =
+            $ioConfig->get('routing.urlTrailingSlash') ??
+            $ioConfig->get('routing.trailingSlash') ??
+            $ioConfig->get('urlTrailingSlash') ??
+            null;
+        $domain = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
+        $language = $this->sessionStorage->getLocaleSettings()->language;
+        $path = $domain . '/' . $language . '/payment/novalnet/processPayment';
+        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl path ', $path);
+        $this->getLogger(__METHOD__)->error('Novalnet::trailingSlashSetting path ', (int)$trailingSlashSetting);
+        /**
+         * 0 = do nothing
+         * 1 = remove slash
+         * 2 = append slash
+         */
+        if ((int)$trailingSlashSetting === 2) {
+           $path .= '/';
+           $this->getLogger(__METHOD__)->error('Novalnet::AlwaysAppend path ', $path);
+        }
         return $path;
     }
     

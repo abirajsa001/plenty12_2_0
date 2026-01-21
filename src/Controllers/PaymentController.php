@@ -172,6 +172,7 @@ class PaymentController extends Controller
     {
         // Get the payment form post data
         $paymentRequestPostData = $this->request->all();
+        $this->getLogger(__METHOD__)->error('Novalnet::processPayment paymentRequestPostData', $paymentRequestPostData);
         // Get the order amount
         $orderAmount = !empty($paymentRequestPostData['nn_order_amount']) ? $paymentRequestPostData['nn_order_amount'] : 0;
         // Get instalment selected option key value
