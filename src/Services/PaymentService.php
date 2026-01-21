@@ -905,15 +905,17 @@ class PaymentService
         $webstoreConfigRepo = pluginApp(WebstoreConfigurationRepositoryContract::class);
         $webstoreId = pluginApp(Application::class)->getWebstoreId();
         $config = $webstoreConfigRepo->findByPlentyId($webstoreId);
+        $webconfig = $this->webstoreHelper->getCurrentWebstoreConfiguration();
         $this->getLogger(__METHOD__)->error(
             'Novalnet::config path and webstoreID',
             [
                 'webstoreId' => $webstoreId,
                 'config' => $config,
-                'configPath' => json_decode(json_encode($config), true)
+                'configPath' => json_decode(json_encode($config), true),
+                'trailingSlash'=> $webconfig->urlTrailingSlash
             ]
         );
-        $webconfig = $this->webstoreHelper->getCurrentWebstoreConfiguration();
+        
         $this->getLogger(__METHOD__)->error(
             'Novalnet::webstoreConfig_full',
             json_decode(json_encode($webconfig), true)
@@ -936,8 +938,14 @@ class PaymentService
         // 1 = Always append (Immer anhängen)
         // 2 = Always remove (Immer entfernen)
         $trailingSlashSetting = $config->urlTrailingSlash; 
-        $this->getLogger(__METHOD__)->error('Novalnet::trailingSlashSetting path ', $trailingSlashSetting);
-        if ($trailingSlashSetting == 2) {
+        $this->getLogger(__METHOD__)->error(
+            'Novalnet::trailingSlashSetting',
+            [
+                'value' => $trailingSlashSetting
+            ]
+        );
+        
+        if ($webconfig->urlTrailingSlash == 2) {
             // Always append
             $path .= '/';
             $this->getLogger(__METHOD__)->error('Novalnet::AlwaysAppend path ', $path);
