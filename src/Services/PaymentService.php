@@ -921,12 +921,12 @@ class PaymentService
             json_decode(json_encode($webconfig), true)
         );
 
-        $webstoreConfigurationRepository = pluginApp(WebstoreConfigurationRepositoryContract::class);
-        $webstoreConfiguration = $webstoreConfigurationRepository->getWebstoreConfiguration();
-        $this->getLogger(__METHOD__)->error(
-            'Novalnet::webstoreConfiguration_full',
-            json_decode(json_encode($webstoreConfiguration), true)
-        );
+        // $webstoreConfigurationRepository = pluginApp(WebstoreConfigurationRepositoryContract::class);
+        // $webstoreConfiguration = $webstoreConfigurationRepository->getWebstoreConfiguration();
+        // $this->getLogger(__METHOD__)->error(
+        //     'Novalnet::webstoreConfiguration_full',
+        //     json_decode(json_encode($webstoreConfiguration), true)
+        // );
         
         // Get basic path
         $domain = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
