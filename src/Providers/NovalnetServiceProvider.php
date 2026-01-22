@@ -194,9 +194,10 @@ class NovalnetServiceProvider extends ServiceProvider
                         ]);
                         $contentType = 'htmlContent';
                     } elseif($paymentKey == 'NOVALNET_ACH') {
+                        $paymentController = pluginApp(\Novalnet\Controllers\PaymentController::class);
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetACH',
                         [
-                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
+                            'nnPaymentProcessUrl'   => $paymentController->processPayment(),
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'AccountHolderName'     => $paymentRequestData['paymentRequestData']['customer']['first_name'] . ' ' . $paymentRequestData['paymentRequestData']['customer']['last_name'],
