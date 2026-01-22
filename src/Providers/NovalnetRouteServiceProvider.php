@@ -26,8 +26,6 @@ class NovalnetRouteServiceProvider extends RouteServiceProvider
     public function map(Router $router)
     {
         // Get the Novalnet success, cancellation, reinitialize payment and callback URLs
-        // $router->match(['post', 'get'], 'payment/novalnet/processPayment', 'Novalnet\Controllers\PaymentController@processPayment');
-        // $router->match(['post', 'get'], 'payment/novalnet/processPayment/', 'Novalnet\Controllers\PaymentController@processPayment');
         $router->post('rest/payment/novalnet/processPayment', 'Novalnet\Controllers\PaymentController@processPayment');
         $router->match(['post', 'get'], 'payment/novalnet/webhook', 'Novalnet\Controllers\WebhookController@processWebhook');
         $router->get('payment/novalnet/paymentResponse', 'Novalnet\Controllers\PaymentController@paymentResponse');

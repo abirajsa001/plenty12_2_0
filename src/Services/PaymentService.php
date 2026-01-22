@@ -902,27 +902,7 @@ class PaymentService
     */
     public function getProcessPaymentUrl()
     {
-        $webconfig = $this->webstoreHelper->getCurrentWebstoreConfiguration();
-        $this->getLogger(__METHOD__)->error('Novalnet::config path and webstoreIDS',['webconfig' => json_decode(json_encode($webconfig), true), 'trailingSlash'=> $webconfig->urlTrailingSlash]);
-        $this->getLogger(__METHOD__)->error('Novalnet::webstoreConfig_full',json_decode(json_encode($webconfig), true));
-
-        // Get basic path
-        $domain = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
-        $language = $this->sessionStorage->getLocaleSettings()->language;
-        $path = $domain . '/' . $language . '/rest/payment/novalnet/processPayment';
-    
-        // Check the specific URL structure setting for trailing slashes
-        // 0 = Do not adjust (Nicht anpassen)
-        // 1 = Always append (Immer anhängen)
-        // 2 = Always remove (Immer entfernen)
-        if ($webconfig->urlTrailingSlash == 2) {
-            // Always append
-            $path .= '/';
-            $this->getLogger(__METHOD__)->error('Novalnet::AlwaysAppend path', $path);
-        } 
-        $this->getLogger(__METHOD__)->error('Novalnet::getProcessPaymentUrl path', $path);
-        return $path;
-        // return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment'; 
+        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/rest/payment/novalnet/processPayment'; 
     }
     
     /**

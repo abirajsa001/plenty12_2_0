@@ -175,10 +175,9 @@ class NovalnetServiceProvider extends ServiceProvider
                         ]);
                         $contentType = 'htmlContent';
                     } elseif($paymentKey == 'NOVALNET_CC') {
-                        $paymentController = pluginApp(\Novalnet\Controllers\PaymentController::class);
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetCc',
                         [
-                            'nnPaymentProcessUrl'   => $paymentController->processPayment(),
+                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'transactionData'       => $paymentService->getCreditCardAuthenticationCallData($basketRepository->load(), strtolower($paymentKey)),
@@ -194,10 +193,9 @@ class NovalnetServiceProvider extends ServiceProvider
                         ]);
                         $contentType = 'htmlContent';
                     } elseif($paymentKey == 'NOVALNET_ACH') {
-                        $paymentController = pluginApp(\Novalnet\Controllers\PaymentController::class);
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetACH',
                         [
-                            'nnPaymentProcessUrl'   => $paymentController->processPayment(),
+                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'AccountHolderName'     => $paymentRequestData['paymentRequestData']['customer']['first_name'] . ' ' . $paymentRequestData['paymentRequestData']['customer']['last_name'],
