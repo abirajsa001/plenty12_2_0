@@ -902,7 +902,12 @@ class PaymentService
     */
     public function getProcessPaymentUrl(Response $response)
     {
-        return $response->redirectTo('/rest/payment/novalnet/processPayment');
+        return $response->redirectTo(
+            $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl
+            . '/'
+            . $this->sessionStorage->getLocaleSettings()->language
+            . 'rest/payment/novalnet/processPayment'
+        );
     }
     
     /**
