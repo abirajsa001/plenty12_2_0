@@ -909,7 +909,7 @@ class PaymentService
         // Get basic path
         $domain = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl;
         $language = $this->sessionStorage->getLocaleSettings()->language;
-        $path = $domain . '/' . $language . '/payment/novalnet/processPayment';
+        $path = $domain . '/' . $language . '/rest/payment/novalnet/processPayment';
     
         // Check the specific URL structure setting for trailing slashes
         // 0 = Do not adjust (Nicht anpassen)
