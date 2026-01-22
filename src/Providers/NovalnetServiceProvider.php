@@ -168,7 +168,7 @@ class NovalnetServiceProvider extends ServiceProvider
                         ]);
                         $contentType = 'htmlContent';
                     } elseif($paymentKey == 'NOVALNET_GUARANTEED_INVOICE' && $showBirthday == true) {
-                        $response = pluginAPP(Response::class);
+                        $response = pluginApp(Response::class);
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetGuaranteedInvoice',
                         [
                             'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl($response),
