@@ -900,9 +900,9 @@ class PaymentService
     *
     * @return string
     */
-    public function getProcessPaymentUrl()
+    public function getProcessPaymentUrl(Response $response)
     {
-        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/rest/payment/novalnet/processPayment'; 
+        return $response->redirectTo('/rest/payment/novalnet/processPayment');
     }
     
     /**
