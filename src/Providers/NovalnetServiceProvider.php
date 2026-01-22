@@ -160,7 +160,7 @@ class NovalnetServiceProvider extends ServiceProvider
                     } elseif(in_array($paymentKey, ['NOVALNET_SEPA', 'NOVALNET_GUARANTEED_SEPA'])) {
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetSepa',
                         [
-                            'nnPaymentProcessUrl'   => '/payment/novalnet/processPayment',
+                            'nnPaymentProcessUrl'   => '/rest/payment/novalnet/processPayment',
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'showBirthday'          => $showBirthday
