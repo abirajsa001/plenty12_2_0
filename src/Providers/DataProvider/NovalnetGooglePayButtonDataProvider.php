@@ -90,7 +90,7 @@ class NovalnetGooglePayButtonDataProvider
                                             'orderAmount'           => $orderAmount,
                                             'orderLang'             => $orderLang,
                                             'orderCurrency'         => $basket->currency,
-                                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl()
+                                            'nnPaymentProcessUrl'   => '/rest/payment/novalnet/processPayment',
                                         ]);
         } else {
             return '';

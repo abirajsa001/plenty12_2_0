@@ -896,21 +896,6 @@ class PaymentService
     }
 
     /**
-    * Get the direct payment process controller URL to be handled
-    *
-    * @return string
-    */
-    public function getProcessPaymentUrl(Response $response)
-    {
-        return $response->redirectTo(
-            $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl
-            . '/'
-            . $this->sessionStorage->getLocaleSettings()->language
-            . 'rest/payment/novalnet/processPayment'
-        );
-    }
-    
-    /**
      * Collecting the Credit Card for the initial authentication call to PSP
      *
      * @param object $basket

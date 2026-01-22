@@ -171,7 +171,7 @@ class NovalnetServiceProvider extends ServiceProvider
                         $response = pluginApp(Response::class);
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetGuaranteedInvoice',
                         [
-                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl($response),
+                            'nnPaymentProcessUrl'   => '/rest/payment/novalnet/processPayment',
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                         ]);
@@ -179,7 +179,7 @@ class NovalnetServiceProvider extends ServiceProvider
                     } elseif($paymentKey == 'NOVALNET_CC') {
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetCc',
                         [
-                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
+                            'nnPaymentProcessUrl'   => '/rest/payment/novalnet/processPayment',
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'transactionData'       => $paymentService->getCreditCardAuthenticationCallData($basketRepository->load(), strtolower($paymentKey)),
@@ -189,7 +189,7 @@ class NovalnetServiceProvider extends ServiceProvider
                     } elseif($paymentKey == 'NOVALNET_MBWAY') {
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetMBway',
                         [
-                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
+                            'nnPaymentProcessUrl'   => '/rest/payment/novalnet/processPayment',
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                         ]);
@@ -197,7 +197,7 @@ class NovalnetServiceProvider extends ServiceProvider
                     } elseif($paymentKey == 'NOVALNET_ACH') {
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetACH',
                         [
-                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
+                            'nnPaymentProcessUrl'   => '/rest/payment/novalnet/processPayment',
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'AccountHolderName'     => $paymentRequestData['paymentRequestData']['customer']['first_name'] . ' ' . $paymentRequestData['paymentRequestData']['customer']['last_name'],
@@ -217,7 +217,7 @@ class NovalnetServiceProvider extends ServiceProvider
                         }
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetInstalmentSepa',
                         [
-                            'nnPaymentProcessUrl'               => $paymentService->getProcessPaymentUrl(),
+                            'nnPaymentProcessUrl'               => '/rest/payment/novalnet/processPayment',
                             'paymentMopKey'                     => $paymentKey,
                             'paymentName'                       => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'showBirthday'                      => $showBirthday,
@@ -240,7 +240,7 @@ class NovalnetServiceProvider extends ServiceProvider
                         }
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetInstalmentInvoice',
                         [
-                            'nnPaymentProcessUrl'               => $paymentService->getProcessPaymentUrl(),
+                            'nnPaymentProcessUrl'               => '/rest/payment/novalnet/processPayment',
                             'paymentMopKey'                     => $paymentKey,
                             'paymentName'                       => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'instalmentCyclesAmount'            => $instalmentCyclesAmount,
