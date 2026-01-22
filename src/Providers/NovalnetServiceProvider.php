@@ -11,7 +11,6 @@ namespace Novalnet\Providers;
 
 use Novalnet\Helper\PaymentHelper;
 use Novalnet\Services\PaymentService;
-use Novalnet\Controller\PaymentController;
 use Novalnet\Assistants\NovalnetAssistant;
 use Novalnet\Methods\NovalnetPaymentAbstract;
 use Novalnet\Constants\NovalnetConstants;
@@ -61,7 +60,6 @@ class NovalnetServiceProvider extends ServiceProvider
      * @param PaymentMethodContainer $payContainer
      * @param PaymentHelper $paymentHelper
      * @param PaymentService $paymentService
-     * @param PaymentController $paymentController
      * @param FrontendSessionStorageFactoryContract $sessionStorage
      * @param Twig $twig
      * @param EventProceduresService $eventProceduresService
@@ -73,7 +71,6 @@ class NovalnetServiceProvider extends ServiceProvider
                         PaymentMethodContainer $payContainer,
                         PaymentHelper $paymentHelper,
                         PaymentService $paymentService,
-                        PaymentController $paymentController,
                         FrontendSessionStorageFactoryContract $sessionStorage,
                         Twig $twig,
                         EventProceduresService $eventProceduresService,
@@ -121,7 +118,6 @@ class NovalnetServiceProvider extends ServiceProvider
      * @param BasketRepositoryContract $basketRepository
      * @param PaymentHelper $paymentHelper
      * @param PaymentService $paymentService
-     * @param PaymentController $paymentController
      * @param FrontendSessionStorageFactoryContract $sessionStorage
      * @param Twig $twig
      * @param SettingsService $settingsService
@@ -132,7 +128,6 @@ class NovalnetServiceProvider extends ServiceProvider
                                                 BasketRepositoryContract $basketRepository,
                                                 PaymentHelper $paymentHelper,
                                                 PaymentService $paymentService,
-                                                PaymentController $paymentController,
                                                 FrontendSessionStorageFactoryContract $sessionStorage,
                                                 Twig $twig,
                                                 SettingsService $settingsService
@@ -182,7 +177,7 @@ class NovalnetServiceProvider extends ServiceProvider
                     } elseif($paymentKey == 'NOVALNET_CC') {
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetCc',
                         [
-                            'nnPaymentProcessUrl'   => $paymentController->processPayment(),
+                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                             'transactionData'       => $paymentService->getCreditCardAuthenticationCallData($basketRepository->load(), strtolower($paymentKey)),
