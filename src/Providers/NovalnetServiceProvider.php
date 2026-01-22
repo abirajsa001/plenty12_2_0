@@ -175,7 +175,7 @@ class NovalnetServiceProvider extends ServiceProvider
                         ]);
                         $contentType = 'htmlContent';
                     } elseif($paymentKey == 'NOVALNET_CC') {
-                        $paymentController = pluginApp(\Novalnet\Controller\PaymentController::class);
+                        $paymentController = pluginApp(\Novalnet\Controllers\PaymentController::class);
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetCc',
                         [
                             'nnPaymentProcessUrl'   => $paymentController->processPayment(),
