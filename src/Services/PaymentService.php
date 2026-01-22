@@ -25,12 +25,6 @@ use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
 use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
-use IO\Extensions\Constants\ShopUrls;
-use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
-use Plenty\Modules\Webshop\Helpers\UrlQuery;
-use IO\Helper\Configuration;
-use Plenty\Plugin\Application;
-
 /**
  * Class PaymentService
  *
