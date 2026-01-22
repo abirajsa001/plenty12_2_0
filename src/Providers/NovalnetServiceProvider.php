@@ -33,6 +33,7 @@ use Plenty\Modules\Order\Pdf\Events\OrderPdfGenerationEvent;
 use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
 use Plenty\Modules\Document\Models\Document;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
+use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
 
 /**
@@ -167,9 +168,10 @@ class NovalnetServiceProvider extends ServiceProvider
                         ]);
                         $contentType = 'htmlContent';
                     } elseif($paymentKey == 'NOVALNET_GUARANTEED_INVOICE' && $showBirthday == true) {
+                        $response = pluginAPP(Response::class);
                         $content = $twig->render('Novalnet::PaymentForm.NovalnetGuaranteedInvoice',
                         [
-                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
+                            'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl($response),
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                         ]);
