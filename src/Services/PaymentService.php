@@ -903,7 +903,7 @@ class PaymentService
     public function getProcessPaymentUrl()
     {
         $webconfig = $this->webstoreHelper->getCurrentWebstoreConfiguration();
-        $this->getLogger(__METHOD__)->error('Novalnet::config path and webstoreID',['webconfig' => json_decode(json_encode($webconfig), true), 'trailingSlash'=> $webconfig->urlTrailingSlash]);
+        $this->getLogger(__METHOD__)->error('Novalnet::config path and webstoreIDS',['webconfig' => json_decode(json_encode($webconfig), true), 'trailingSlash'=> $webconfig->urlTrailingSlash]);
         $this->getLogger(__METHOD__)->error('Novalnet::webstoreConfig_full',json_decode(json_encode($webconfig), true));
 
         // Get basic path
