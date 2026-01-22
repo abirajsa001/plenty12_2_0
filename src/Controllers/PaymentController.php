@@ -156,7 +156,7 @@ class PaymentController extends Controller
             }
         }
     }
-    
+
     /**
      * Process the Form payment
      *
