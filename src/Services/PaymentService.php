@@ -25,6 +25,7 @@ use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
 use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
+use Plenty\Modules\Webshop\Helpers\UrlQuery;
 
 /**
  * Class PaymentService
@@ -889,6 +890,26 @@ class PaymentService
     {
         return ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'UK', 'CH'];
     }
+
+    /**
+    * Get the direct payment process controller URL to be handled
+    *
+    * @return string
+    */
+    public function getProcessPaymentUrl()
+    {
+        $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment';
+        $this->getLogger(__METHOD__)->error('Novalnet::processPayment path', ['path' => $path]);
+        $url = UrlQuery::shouldAppendTrailingSlash();
+
+        $this->getLogger(__METHOD__)->error('Novalnet::processPayment url',['shouldAppendTrailingSlash' => $url,'method' => __METHOD__]);
+        if(UrlQuery::shouldAppendTrailingSlash()) {
+            $path .= '/';
+            $this->getLogger(__METHOD__)->error('Novalnet::shouldAppendTrailingSlashPath',['shouldAppendTrailingSlashPath' => $path]);
+        }
+        return $path;
+    }
+
 
     /**
      * Collecting the Credit Card for the initial authentication call to PSP
