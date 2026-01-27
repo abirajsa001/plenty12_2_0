@@ -456,12 +456,8 @@ class PaymentService
     public function getReturnPageUrl()
     {
         $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/paymentResponse';
-        $this->getLogger(__METHOD__)->error('Novalnet::getReturnPageUrl path', ['path' => $path]);
-        $url = UrlQuery::shouldAppendTrailingSlash();
-        $this->getLogger(__METHOD__)->error('Novalnet::getReturnPageUrl url',['shouldAppendTrailingSlash' => $url,'method' => __METHOD__]);
         if(UrlQuery::shouldAppendTrailingSlash()) {
             $path .= '/';
-            $this->getLogger(__METHOD__)->error('Novalnet::getReturnPageUrlSlashPath',['shouldAppendTrailingSlashPath' => $path]);
         }
         return $path;
     }
@@ -474,12 +470,8 @@ class PaymentService
     public function getRedirectPaymentUrl()
     {
         $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/redirectPayment';
-        $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl path', ['path' => $path]);
-        $url = UrlQuery::shouldAppendTrailingSlash();
-        $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl url',['shouldAppendTrailingSlash' => $url,'method' => __METHOD__]);
         if(UrlQuery::shouldAppendTrailingSlash()) {
             $path .= '/';
-            $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl SlashPath',['shouldAppendTrailingSlashPath' => $path]);
         }
         return $path;
     }
@@ -915,17 +907,11 @@ class PaymentService
     public function getProcessPaymentUrl()
     {
         $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/processPayment';
-        $this->getLogger(__METHOD__)->error('Novalnet::processPayment path', ['path' => $path]);
-        $url = UrlQuery::shouldAppendTrailingSlash();
-
-        $this->getLogger(__METHOD__)->error('Novalnet::processPayment url',['shouldAppendTrailingSlash' => $url,'method' => __METHOD__]);
         if(UrlQuery::shouldAppendTrailingSlash()) {
             $path .= '/';
-            $this->getLogger(__METHOD__)->error('Novalnet::shouldAppendTrailingSlashPath',['shouldAppendTrailingSlashPath' => $path]);
         }
         return $path;
     }
-
 
     /**
      * Collecting the Credit Card for the initial authentication call to PSP
