@@ -34,8 +34,7 @@ class NovalnetRouteServiceProvider extends RouteServiceProvider
         $router->get('payment/novalnet/paymentResponse/', 'Novalnet\Controllers\PaymentController@paymentResponse');
         $router->get('payment/novalnet/directPaymentProcess', 'Novalnet\Controllers\PaymentController@directPaymentProcess');
         $router->get('payment/novalnet/directPaymentProcess/', 'Novalnet\Controllers\PaymentController@directPaymentProcess');
-        $router->get('payment/novalnet/directPaymentProcess/', 'Novalnet\Controllers\PaymentController@directPaymentProcess');
-        $router->post('payment/novalnet/redirectPayment', 'Novalnet\Controllers\PaymentController@directPaymentProcess');
-        $router->post('payment/novalnet/redirectPayment/', 'Novalnet\Controllers\PaymentController@directPaymentProcess');
+        $router->post('payment/novalnet/redirectPayment', 'Novalnet\Controllers\PaymentController@redirectPayment');
+        $router->post('payment/novalnet/redirectPayment/', 'Novalnet\Controllers\PaymentController@redirectPayment');
     }
 }
