@@ -127,7 +127,7 @@ class NovalnetPaymentMethodReinitializePaymentDataProvider
                                     'paymentMopKey' => $paymentKey,
                                     'instalmentCyclesAmount' => $instalmentCyclesAmount,
                                     'reinitializePayment' => 1,
-                                    'nnPaymentProcessUrl' => '/rest/payment/novalnet/processPayment',
+                                    'nnPaymentProcessUrl' => $paymentService->getProcessPaymentUrl(),
                                     'paymentName' => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
                                     'transactionData' => !empty($ccFormDetails) ? $ccFormDetails : '',
                                     'customData' => !empty($ccCustomFields) ? $ccCustomFields : '',

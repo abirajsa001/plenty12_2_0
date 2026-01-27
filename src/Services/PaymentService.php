@@ -455,7 +455,15 @@ class PaymentService
      */
     public function getReturnPageUrl()
     {
-        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/paymentResponse';
+        $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/paymentResponse';
+        $this->getLogger(__METHOD__)->error('Novalnet::getReturnPageUrl path', ['path' => $path]);
+        $url = UrlQuery::shouldAppendTrailingSlash();
+        $this->getLogger(__METHOD__)->error('Novalnet::getReturnPageUrl url',['shouldAppendTrailingSlash' => $url,'method' => __METHOD__]);
+        if(UrlQuery::shouldAppendTrailingSlash()) {
+            $path .= '/';
+            $this->getLogger(__METHOD__)->error('Novalnet::getReturnPageUrlSlashPath',['shouldAppendTrailingSlashPath' => $path]);
+        }
+        return $path;
     }
 
     /**
@@ -465,7 +473,15 @@ class PaymentService
     */
     public function getRedirectPaymentUrl()
     {
-        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/redirectPayment';
+        $path = $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $this->sessionStorage->getLocaleSettings()->language . '/payment/novalnet/redirectPayment';
+        $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl path', ['path' => $path]);
+        $url = UrlQuery::shouldAppendTrailingSlash();
+        $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl url',['shouldAppendTrailingSlash' => $url,'method' => __METHOD__]);
+        if(UrlQuery::shouldAppendTrailingSlash()) {
+            $path .= '/';
+            $this->getLogger(__METHOD__)->error('Novalnet::getRedirectPaymentUrl SlashPath',['shouldAppendTrailingSlashPath' => $path]);
+        }
+        return $path;
     }
 
     /**
