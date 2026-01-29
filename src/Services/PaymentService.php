@@ -89,7 +89,7 @@ class PaymentService
     /**
      * @var redirectPayment
      */
-    private $redirectPayment = ['NOVALNET_APPLEPAY', 'NOVALNET_IDEAL', 'NOVALNET_SOFORT', 'NOVALNET_GIROPAY', 'NOVALNET_PRZELEWY24', 'NOVALNET_EPS', 'NOVALNET_PAYPAL', 'NOVALNET_POSTFINANCE_CARD', 'NOVALNET_POSTFINANCE_EFINANCE', 'NOVALNET_BANCONTACT', 'NOVALNET_ONLINE_BANK_TRANSFER', 'NOVALNET_ALIPAY', 'NOVALNET_WECHAT_PAY', 'NOVALNET_TRUSTLY', 'NOVALNET_BLIK', 'NOVALNET_PAYCONIQ', 'NOVALNET_TWINT'];
+    private $redirectPayment = ['NOVALNET_APPLEPAY', 'NOVALNET_IDEAL', 'NOVALNET_PRZELEWY24', 'NOVALNET_EPS', 'NOVALNET_PAYPAL', 'NOVALNET_POSTFINANCE_CARD', 'NOVALNET_POSTFINANCE_EFINANCE', 'NOVALNET_BANCONTACT', 'NOVALNET_ONLINE_BANK_TRANSFER', 'NOVALNET_ALIPAY', 'NOVALNET_WECHAT_PAY', 'NOVALNET_TRUSTLY', 'NOVALNET_BLIK', 'NOVALNET_PAYCONIQ', 'NOVALNET_TWINT'];
 
     /**
      * Constructor.
@@ -306,7 +306,7 @@ class PaymentService
             'system_ip'         => $_SERVER['SERVER_ADDR']
         ];
         // Send due date to the Novalnet server if it configured
-        if(in_array($paymentKey, ['NOVALNET_INVOICE', 'NOVALNET_PREPAYMENT', 'NOVALNET_CASHPAYMENT', 'NOVALNET_SEPA'])) {
+        if(in_array($paymentKey, ['NOVALNET_INVOICE', 'NOVALNET_PREPAYMENT', 'NOVALNET_SEPA'])) {
             $dueDate = $this->settingsService->getPaymentSettingsValue('due_date', $paymentKeyLower);
             if(is_numeric($dueDate)) {
                 if($paymentKey == 'NOVALNET_SEPA' && is_numeric($dueDate) && $dueDate > 1 && $dueDate < 15) {
@@ -411,9 +411,6 @@ class PaymentService
             'NOVALNET_APPLEPAY'             => 'APPLEPAY',
             'NOVALNET_GOOGLEPAY'            => 'GOOGLEPAY',
             'NOVALNET_IDEAL'                => 'IDEAL',
-            'NOVALNET_SOFORT'               => 'ONLINE_TRANSFER',
-            'NOVALNET_GIROPAY'              => 'GIROPAY',
-            'NOVALNET_CASHPAYMENT'          => 'CASHPAYMENT',
             'NOVALNET_PRZELEWY24'           => 'PRZELEWY24',
             'NOVALNET_EPS'                  => 'EPS',
             'NOVALNET_INSTALMENT_INVOICE'   => 'INSTALMENT_INVOICE',
@@ -626,11 +623,6 @@ class PaymentService
             $nnPaymentData['transaction']['order_no'] = $this->sessionStorage->getPlugin()->getValue('nnOrderNo');
             $this->sessionStorage->getPlugin()->setValue('nnOrderNo', null);
         }
-        // Set the cashpayment token to session
-        if($nnPaymentData['payment_method'] == 'novalnet_cashpayment' && !empty($nnPaymentData['transaction']['checkout_token']) && $nnPaymentData['transaction']['status'] == 'PENDING') {
-            $this->sessionStorage->getPlugin()->setValue('novalnetCheckoutToken', $nnPaymentData['transaction']['checkout_token']);
-            $this->sessionStorage->getPlugin()->setValue('novalnetCheckoutUrl', $nnPaymentData['transaction']['checkout_js']);
-        }
         // Update the Order No to the order if the payment before order completion set as 'No' for direct payments
          if(empty($nnOrderCreator) && $this->settingsService->getPaymentSettingsValue('novalnet_order_creation') != true) {
             $paymentResponseData = $this->sendPostbackCall($nnPaymentData);
@@ -723,15 +715,6 @@ class PaymentService
                 $additionalInfo['next_cycle_date']        = $paymentResponseData['instalment']['next_cycle_date'];
                 $additionalInfo['cycles_executed']        = $paymentResponseData['instalment']['cycles_executed'];
                 $additionalInfo['cycle_amount']           = $paymentResponseData['instalment']['cycle_amount'];
-            }
-
-            // Add the store details for the cashpayment
-            if($paymentResponseData['payment_method'] == 'novalnet_cashpayment') {
-                if(empty($paymentResponseData['transaction']['nearest_stores'])) {
-                    $this->getSavedPaymentDetails($paymentResponseData);
-                }
-                $additionalInfo['store_details'] = $paymentResponseData['transaction']['nearest_stores'];
-                $additionalInfo['cp_due_date']   = !empty($dueData) ? $dueDate : $paymentResponseData['transaction']['due_date'];
             }
 
             // Add the pament reference details for the Multibanco
@@ -1066,15 +1049,6 @@ class PaymentService
         if((in_array($transactionData['paymentName'], ['novalnet_instalment_sepa', 'novalnet_instalment_invoice']) && !in_array($transactionData['tx_status'], ['PENDING', 'DEACTIVATED', 'FAILURE']))) {
             $transactionComments .= PHP_EOL . $this->getInstalmentInformation($transactionData);
         }
-
-        // Form the cashpayment comments
-        if($transactionData['paymentName'] == 'novalnet_cashpayment' && !in_array($transactionData['tx_status'], ['DEACTIVATED', 'FAILURE'])) {
-            if(!empty($transactionData['cashpayment_comments'])) {
-                $transactionComments .= PHP_EOL . $transactionData['cashpayment_comments'];
-            } else {
-                $transactionComments .= PHP_EOL . $this->getStoreInformation($transactionData);
-            }
-        }
         // Form the Multibanco payment reference
         if($transactionData['paymentName'] == 'novalnet_multibanco' && !in_array($transactionData['tx_status'], ['DEACTIVATED', 'FAILURE'])) {
             $transactionComments .= PHP_EOL . $this->getMultibancoReferenceInformation($transactionData);
@@ -1146,31 +1120,6 @@ class PaymentService
 			$invoiceComments .= PHP_EOL . $this->paymentHelper->getTranslatedText('payment_reference2') . $transactionData['invoice_ref'] . PHP_EOL;
 		}
         return $invoiceComments;
-    }
-
-    /**
-     * Form the cashpayment store details comments
-     *
-     * @param array $transactionData
-     *
-     * @return string
-     */
-    public function getStoreInformation($transactionData)
-    {
-        $cashpaymentComments  = PHP_EOL . $this->paymentHelper->getTranslatedText('cashpayment_expire_date') . $transactionData['cp_due_date'];
-        $cashpaymentComments .= PHP_EOL . $this->paymentHelper->getTranslatedText('cashpayment_stores_near_you');
-        // We loop in each of them to print those store details
-        if(!empty($transactionData['store_details'])) {
-            for($storePos = 1; $storePos <= count( $transactionData['store_details']); $storePos++) {
-                $cashpaymentComments .= PHP_EOL .  $transactionData['store_details'][$storePos]['store_name'];
-                $cashpaymentComments .= PHP_EOL . utf8_encode( $transactionData['store_details'][$storePos]['street']);
-                $cashpaymentComments .= PHP_EOL .  $transactionData['store_details'][$storePos]['city'];
-                $cashpaymentComments .= PHP_EOL .  $transactionData['store_details'][$storePos]['zip'];
-                $cashpaymentComments .= PHP_EOL .  $transactionData['store_details'][$storePos]['country_code'];
-                $cashpaymentComments .= PHP_EOL;
-            }
-        }
-        return $cashpaymentComments;
     }
 
     /**
@@ -1344,16 +1293,11 @@ class PaymentService
                     if($orderProperty->typeId == 30) { // Load the transaction status
                         $txStatus = $orderProperty->value;
                     }
-                    if($orderProperty->typeId == 22) { // Loads the cashpayment comments from the payment object for previous payment plugin versions
-                        $cashpaymentComments = $orderProperty->value;
-                    }
                 }
                 // Get Novalnet transaction details from the Novalnet database table
                 $nnDbTxDetails = $this->getDatabaseValues($orderId);
                 // Get the transaction status as string for the previous payment plugin version
                 $nnDbTxDetails['tx_status'] = $this->getTxStatusAsString($txStatus, $nnDbTxDetails['payment_id']);
-                // Set the cashpayment comments into array
-                $nnDbTxDetails['cashpayment_comments'] = !empty($cashpaymentComments) ? $cashpaymentComments : '';
                 // Form the Novalnet transaction comments
                 $transactionComments = $this->formTransactionComments($nnDbTxDetails);
             }
@@ -1402,10 +1346,6 @@ class PaymentService
            $paymentResponseData['transaction']['due_date']                       = $transactionData['due_date'];
            $paymentResponseData['transaction']['invoice_ref']                    = $transactionData['invoice_ref'];
            $paymentResponseData['payment_method']                                = $transactionData['paymentName'];
-       }
-       if($transactionData['paymentName'] == 'novalnet_cashpayment') {
-           $paymentResponseData['transaction']['nearest_stores'] = $transactionData['store_details'];
-           $paymentResponseData['transaction']['due_date']       = $transactionData['cp_due_date'];
        }
        if($transactionData['paymentName'] == 'novalnet_multibanco') {
            $paymentResponseData['transaction']['partner_payment_reference'] = $transactionData['partner_payment_reference'];

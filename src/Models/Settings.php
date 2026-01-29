@@ -73,9 +73,6 @@ class Settings extends Model
             'novalnet_guaranteed_invoice'   => $data['novalnet_guaranteed_invoice'],
             'novalnet_guaranteed_sepa'      => $data['novalnet_guaranteed_sepa'],
             'novalnet_ideal'                => $data['novalnet_ideal'],
-            'novalnet_sofort'               => $data['novalnet_sofort'],
-            'novalnet_giropay'              => $data['novalnet_giropay'],
-            'novalnet_cashpayment'          => $data['novalnet_cashpayment'],
             'novalnet_przelewy24'           => $data['novalnet_przelewy24'],
             'novalnet_eps'                  => $data['novalnet_eps'],
             'novalnet_instalment_invoice'   => $data['novalnet_instalment_invoice'],
@@ -152,15 +149,6 @@ class Settings extends Model
         }
         if(isset($data['novalnet_ideal'])) {
             $this->value['novalnet_ideal'] = $data['novalnet_ideal'];
-        }
-        if(isset($data['novalnet_sofort'])) {
-            $this->value['novalnet_sofort'] = $data['novalnet_sofort'];
-        }
-        if(isset($data['novalnet_giropay'])) {
-            $this->value['novalnet_giropay'] = $data['novalnet_giropay'];
-        }
-        if(isset($data['novalnet_cashpayment'])) {
-            $this->value['novalnet_cashpayment'] = $data['novalnet_cashpayment'];
         }
         if(isset($data['novalnet_przelewy24'])) {
             $this->value['novalnet_przelewy24'] = $data['novalnet_przelewy24'];

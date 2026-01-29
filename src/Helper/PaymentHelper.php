@@ -19,9 +19,6 @@ use Novalnet\Methods\NovalnetInstalmentInvoicePaymentMethod;
 use Novalnet\Methods\NovalnetGuaranteedSepaPaymentMethod;
 use Novalnet\Methods\NovalnetInstalmentSepaPaymentMethod;
 use Novalnet\Methods\NovalnetIdealPaymentMethod;
-use Novalnet\Methods\NovalnetSofortPaymentMethod;
-use Novalnet\Methods\NovalnetGiropayPaymentMethod;
-use Novalnet\Methods\NovalnetCashpaymentPaymentMethod;
 use Novalnet\Methods\NovalnetPrzelewy24PaymentMethod;
 use Novalnet\Methods\NovalnetEpsPaymentMethod;
 use Novalnet\Methods\NovalnetPaypalPaymentMethod;
@@ -137,9 +134,6 @@ class PaymentHelper
             NovalnetApplePayPaymentMethod::PAYMENT_KEY              => NovalnetApplePayPaymentMethod::class,
             NovalnetGooglePayPaymentMethod::PAYMENT_KEY             => NovalnetGooglePayPaymentMethod::class,
             NovalnetIdealPaymentMethod::PAYMENT_KEY                 => NovalnetIdealPaymentMethod::class,
-            NovalnetSofortPaymentMethod::PAYMENT_KEY                => NovalnetSofortPaymentMethod::class,
-            NovalnetGiropayPaymentMethod::PAYMENT_KEY               => NovalnetGiropayPaymentMethod::class,
-            NovalnetCashpaymentPaymentMethod::PAYMENT_KEY           => NovalnetCashpaymentPaymentMethod::class,
             NovalnetPrzelewy24PaymentMethod::PAYMENT_KEY            => NovalnetPrzelewy24PaymentMethod::class,
             NovalnetEpsPaymentMethod::PAYMENT_KEY                   => NovalnetEpsPaymentMethod::class,
             NovalnetInstalmentInvoicePaymentMethod::PAYMENT_KEY     => NovalnetInstalmentInvoicePaymentMethod::class,
@@ -220,9 +214,6 @@ class PaymentHelper
                     NovalnetApplePayPaymentMethod::PAYMENT_KEY,
                     NovalnetGooglePayPaymentMethod::PAYMENT_KEY,
                     NovalnetIdealPaymentMethod::PAYMENT_KEY,
-                    NovalnetSofortPaymentMethod::PAYMENT_KEY,
-                    NovalnetGiropayPaymentMethod::PAYMENT_KEY,
-                    NovalnetCashpaymentPaymentMethod::PAYMENT_KEY,
                     NovalnetPrzelewy24PaymentMethod::PAYMENT_KEY,
                     NovalnetEpsPaymentMethod::PAYMENT_KEY,
                     NovalnetInstalmentInvoicePaymentMethod::PAYMENT_KEY,
@@ -454,7 +445,7 @@ class PaymentHelper
             }
             $payment->mopId           = (int) $paymentResponseData['mop'];
             $payment->transactionType = Payment::TRANSACTION_TYPE_BOOKED_POSTING;
-            $payment->status          = ($paymentResponseData['transaction']['status'] == 'ON_HOLD' || ($paymentResponseData['transaction']['status'] == 'PENDING' && !in_array($paymentResponseData['transaction']['payment_type'], ['INVOICE', 'PREPAYMENT', 'CASHPAYMENT', 'MULTIBANCO']))) ? Payment::STATUS_AWAITING_APPROVAL : (($paymentResponseData['result']['status'] == 'FAILURE' || $paymentResponseData['transaction']['status'] == 'DEACTIVATED' ||  isset($paymentResponseData['instalment']['cancel_type']) ) ? Payment::STATUS_CANCELED : Payment::STATUS_CAPTURED);
+            $payment->status          = ($paymentResponseData['transaction']['status'] == 'ON_HOLD' || ($paymentResponseData['transaction']['status'] == 'PENDING' && !in_array($paymentResponseData['transaction']['payment_type'], ['INVOICE', 'PREPAYMENT', 'MULTIBANCO']))) ? Payment::STATUS_AWAITING_APPROVAL : (($paymentResponseData['result']['status'] == 'FAILURE' || $paymentResponseData['transaction']['status'] == 'DEACTIVATED' ||  isset($paymentResponseData['instalment']['cancel_type']) ) ? Payment::STATUS_CANCELED : Payment::STATUS_CAPTURED);
             $payment->currency        = $paymentResponseData['transaction']['currency'];
             $payment->amount          = ($paymentResponseData['result']['status'] == 'SUCCESS' && empty($paymentResponseData['instalment']['cancel_type'])   && !empty($paymentResponseData['transaction']['refund']['amount'])) ? ($paymentResponseData['transaction']['refund']['amount'] / 100) : (($paymentResponseData['transaction']['status'] != 'PENDING' && $paymentResponseData['transaction']['status'] != 'ON_HOLD' && $paymentResponseData['result']['status'] == 'SUCCESS' && $paymentResponseData['instalment']['cycle_amount']) ? (($paymentResponseData['instalment']['cycle_amount']) / 100) : ($paymentResponseData['transaction']['status'] == 'CONFIRMED' ? ($paymentResponseData['transaction']['amount'] / 100) : 0));
             // Set the transaction status
@@ -565,9 +556,6 @@ class PaymentHelper
             'APPLEPAY'                      => 'NOVALNET_APPLEPAY',
             'GOOGLEPAY'                     => 'NOVALNET_GOOGLEPAY',
             'IDEAL'                         => 'NOVALNET_IDEAL',
-            'ONLINE_TRANSFER'               => 'NOVALNET_SOFORT',
-            'GIROPAY'                       => 'NOVALNET_GIROPAY',
-            'CASHPAYMENT'                   => 'NOVALNET_CASHPAYMENT',
             'PRZELEWY24'                    => 'NOVALNET_PRZELEWY24',
             'EPS'                           => 'NOVALNET_EPS',
             'INSTALMENT_INVOICE'            => 'NOVALNET_INSTALMENT_INVOICE',

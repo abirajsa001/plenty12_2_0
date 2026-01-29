@@ -310,8 +310,6 @@ class NovalnetAssistant extends WizardProvider
         $config = $this->createInvoicePaymentConfiguration($config);
         // Load the Prepayment payment configuration
         $config = $this->createPrepaymentPaymentConfiguration($config);
-         // Load the Cashpayment payment configuration
-        $config = $this->createCashpaymentPaymentConfiguration($config);
         // Load the Allow B2B configuration
         $config = $this->createAllowB2BConfiguration($config);
         // Load the Allow Force configuration
@@ -444,30 +442,6 @@ class NovalnetAssistant extends WizardProvider
                                 'tooltip'   => 'NovalnetAssistant.novalnetPrepaymentDuedateTooltip',
                                 'pattern'   => '^[1-9]\d*$'
                                ]
-            ]
-        ];
-        return $config;
-    }
-
-    /**
-    * Create Slip expiry configuration for Cashpayment
-    *
-    * @param array $config
-    *
-    * @return array
-    */
-    public function createCashpaymentPaymentConfiguration($config)
-    {
-        $config['steps']['novalnetCashpayment']['sections'][]['form'] =
-        [
-            'novalnetCashpaymentDuedate' =>
-            [
-                'type' => 'text',
-                'options' => [
-                                'name'    => 'NovalnetAssistant.novalnetCashpaymentDueDateLabel',
-                                'tooltip' => 'NovalnetAssistant.novalnetCashpaymentDueDateTooltip',
-                                'pattern' => '^[1-9]\d*$'
-                             ]
             ]
         ];
         return $config;

@@ -26,9 +26,6 @@ The Novalnet payment plugin integrates your business with the BaFin (German Fede
 - Instalment by Invoice
 - Instalment by Direct Debit SEPA
 - iDEAL
-- Sofort
-- giropay
-- Barzahlen/viacash
 - Przelewy24
 - eps
 - PayPal

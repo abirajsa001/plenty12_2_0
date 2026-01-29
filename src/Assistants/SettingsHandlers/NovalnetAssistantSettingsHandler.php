@@ -56,7 +56,7 @@ class NovalnetAssistantSettingsHandler implements WizardSettingsHandler
                 $novalnetSettings[$paymentMethodKey]['onhold_amount']        = $data[$paymentKey . 'OnHold'] ?? '';
 
             }
-            if(in_array($paymentMethodKey, ['novalnet_invoice', 'novalnet_sepa', 'novalnet_prepayment' , 'novalnet_cashpayment'])) {
+            if(in_array($paymentMethodKey, ['novalnet_invoice', 'novalnet_sepa', 'novalnet_prepayment' ])) {
                 $novalnetSettings[$paymentMethodKey]['due_date']             = $data[$paymentKey . 'Duedate'] ?? '';
             }
             switch ($paymentMethodKey) {

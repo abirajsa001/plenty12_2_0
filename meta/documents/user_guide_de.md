@@ -26,9 +26,6 @@ Das Novalnet-Zahlungsplugin bindet Ihre Verkaufsplattform an die von der BaFin (
 - Ratenzahlung per Rechnung
 - Ratenzahlung per SEPA-Lastschrift
 - iDEAL
-- Sofortüberweisung
-- giropay
-- Barzahlen/viacash
 - Przelewy24
 - eps
 - PayPal
