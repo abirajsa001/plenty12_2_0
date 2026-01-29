@@ -1121,10 +1121,9 @@ class PaymentService
         if(isset($transactionData['invoice_ref'])) {
 			$invoiceComments .= PHP_EOL . $this->paymentHelper->getTranslatedText('payment_reference2') . $transactionData['invoice_ref'] . PHP_EOL;
 		}
-        $invoiceComments .= PHP_EOL . 'Alternatively, you can use the QR code below for your convenience. Please scan it with your banking app to complete the payment.';
         if (!empty($transactionData['qr_image'])) {
-            $invoiceComments .= PHP_EOL
-                . '<img src="' . $transactionData['qr_image'] . '" alt="QR Code">';
+            $invoiceComments .= PHP_EOL . $this->paymentHelper->getTranslatedText('qr_image_text');
+            $invoiceComments .= PHP_EOL . '<img src="' . $transactionData['qr_image'] . '" alt="QR Code">';
         }
         return $invoiceComments;
     }
