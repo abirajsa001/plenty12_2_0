@@ -181,7 +181,7 @@ class PaymentController extends Controller
         }
         // Setting up the account data to the server for ACH processing
         if($paymentRequestPostData['nn_payment_key'] == 'NOVALNET_ACH') {
-                $paymentRequestData['paymentRequestData']['transaction']['payment_data']['account_holder'] = $paymentRequestPostData['nn_ach_account_holder'];
+                $paymentRequestData['paymentRequestData']['transaction']['payment_data']['account_holder'] = $paymentRequestPostData['nn_account_holder'];
                 $paymentRequestData['paymentRequestData']['transaction']['payment_data']['account_number'] = $paymentRequestPostData['nn_ach_account_number'];
                 $paymentRequestData['paymentRequestData']['transaction']['payment_data']['routing_number'] = $paymentRequestPostData['nn_ach_routing_number'];
 
