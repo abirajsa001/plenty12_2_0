@@ -1,7 +1,7 @@
 jQuery(document).ready(function () {
     var script = document.createElement('script');
     script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', 'https://cdn2.novalnet.de/js/v2/NovalnetUtility.js'); 
+    script.setAttribute('src', 'https://cdn.novalnet.de/js/v2/NovalnetUtility.js'); 
     document.head.appendChild(script);
     script.addEventListener("load", function(event) {
     loadCardForm();
