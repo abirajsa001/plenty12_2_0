@@ -163,7 +163,8 @@ class NovalnetServiceProvider extends ServiceProvider
                             'nnPaymentProcessUrl'   => $paymentService->getProcessPaymentUrl(),
                             'paymentMopKey'         => $paymentKey,
                             'paymentName'           => $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey)),
-                            'showBirthday'          => $showBirthday
+                            'showBirthday'          => $showBirthday,
+                            'AccountHolderName'     => $paymentRequestData['paymentRequestData']['customer']['first_name'] . ' ' . $paymentRequestData['paymentRequestData']['customer']['last_name'],
                         ]);
                         $contentType = 'htmlContent';
                     } elseif($paymentKey == 'NOVALNET_GUARANTEED_INVOICE' && $showBirthday == true) {
@@ -221,7 +222,8 @@ class NovalnetServiceProvider extends ServiceProvider
                             'showBirthday'                      => $showBirthday,
                             'instalmentCyclesAmount'            => $instalmentCyclesAmount,
                             'currency'                          => $currency,
-                            'netAmount'                         => $basketRepository->load()->basketAmount
+                            'netAmount'                         => $basketRepository->load()->basketAmount,
+                            'AccountHolderName'                 => $paymentRequestData['paymentRequestData']['customer']['first_name'] . ' ' . $paymentRequestData['paymentRequestData']['customer']['last_name'],
                         ]);
                         $contentType = 'htmlContent';
                     } elseif(($paymentKey == 'NOVALNET_INSTALMENT_INVOICE' && $showBirthday == true) || ($paymentKey == 'NOVALNET_INSTALMENT_INVOICE' && $showBirthday == false && isset($paymentRequestData['paymentRequestData']['customer']['billing']['company']))) {

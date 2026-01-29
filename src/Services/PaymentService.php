@@ -628,6 +628,7 @@ class PaymentService
             $paymentResponseData = $this->sendPostbackCall($nnPaymentData);
             $nnPaymentData['transaction']['order_no'] = $paymentResponseData['transaction']['order_no'];
             $nnPaymentData['transaction']['invoice_ref'] = $paymentResponseData['transaction']['invoice_ref'];
+            $nnPaymentData['transaction']['qr_image'] = $paymentResponseData['transaction']['bank_details']['qr_image'];
         }
         // Insert payment response into Novalnet table
         $this->insertPaymentResponse($nnPaymentData);
@@ -703,6 +704,7 @@ class PaymentService
                 $additionalInfo['invoice_bankplace']      = $paymentResponseData['transaction']['bank_details']['bank_place'];
                 $additionalInfo['due_date']               = !empty($dueData) ? $dueDate : $paymentResponseData['transaction']['due_date'];
                 $additionalInfo['invoice_ref']            = $paymentResponseData['transaction']['invoice_ref'];
+                $additionalInfo['qr_image']               = $paymentResponseData['transaction']['bank_details']['qr_image'];
                 $additionalInfo['pending_cycles']         = $paymentResponseData['instalment']['pending_cycles'];
                 $additionalInfo['next_cycle_date']        = $paymentResponseData['instalment']['next_cycle_date'];
                 $additionalInfo['cycles_executed']        = $paymentResponseData['instalment']['cycles_executed'];
@@ -1119,6 +1121,11 @@ class PaymentService
         if(isset($transactionData['invoice_ref'])) {
 			$invoiceComments .= PHP_EOL . $this->paymentHelper->getTranslatedText('payment_reference2') . $transactionData['invoice_ref'] . PHP_EOL;
 		}
+        $invoiceComments .= PHP_EOL . 'Alternatively, you can use the QR code below for your convenience. Please scan it with your banking app to complete the payment.';
+        if (!empty($transactionData['qr_image'])) {
+            $invoiceComments .= PHP_EOL
+                . '<img src="' . $transactionData['qr_image'] . '" alt="QR Code">';
+        }
         return $invoiceComments;
     }
 
@@ -1344,6 +1351,7 @@ class PaymentService
            $paymentResponseData['transaction']['bank_details']['bank_name']      = $transactionData['invoice_bankname'];
            $paymentResponseData['transaction']['bank_details']['bank_place']     = $transactionData['invoice_bankplace'];
            $paymentResponseData['transaction']['due_date']                       = $transactionData['due_date'];
+           $paymentResponseData['transaction']['bank_details']['qr_image']       = $transactionData['qr_image'];
            $paymentResponseData['transaction']['invoice_ref']                    = $transactionData['invoice_ref'];
            $paymentResponseData['payment_method']                                = $transactionData['paymentName'];
        }
