@@ -148,10 +148,10 @@ class PaymentService
      */
     public function allowedCountries(Basket $basket, $allowedCountry): bool
     {
-        // LOG: raw config
+        // LOG: raw config (safe logging)
         $this->getLogger(__METHOD__)->error('Allowed countries raw value', [
-            'value' => $allowedCountry,
-            'type'  => gettype($allowedCountry)
+            'is_array' => is_array($allowedCountry),
+            'count'    => is_array($allowedCountry) ? count($allowedCountry) : 0
         ]);
     
         // Normalize allowed countries
@@ -164,7 +164,7 @@ class PaymentService
         } else {
             $allowedCountries = array_map(
                 fn($c) => strtoupper(trim($c)),
-                explode(',', $allowedCountry)
+                explode(',', (string) $allowedCountry)
             );
         }
     
@@ -189,17 +189,12 @@ class PaymentService
                 (int) $basket->customerInvoiceAddressId
             );
     
-            // LOG: billing address
-            $this->getLogger(__METHOD__)->error('Billing address retrieved', [
-                'billingAddress' => (array) $billingAddress
-            ]);
-    
             if (empty($billingAddress) || empty($billingAddress->country)) {
                 $this->getLogger(__METHOD__)->error('Billing address or country missing');
                 return false;
             }
     
-            // Get customer country name
+            // Customer country name
             $customerCountry = strtoupper(trim($billingAddress->country->name));
     
             // LOG: customer country
@@ -219,8 +214,7 @@ class PaymentService
     
         } catch (\Throwable $e) {
             $this->getLogger(__METHOD__)->error('Allowed country check exception', [
-                'message' => $e->getMessage(),
-                'trace'   => $e->getTraceAsString()
+                'message' => $e->getMessage()
             ]);
             return false;
         }
