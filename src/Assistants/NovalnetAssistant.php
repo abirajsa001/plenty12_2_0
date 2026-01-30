@@ -14,6 +14,8 @@ use Novalnet\Helper\PaymentHelper;
 use Plenty\Modules\Wizard\Services\WizardProvider;
 use Plenty\Modules\System\Contracts\WebstoreRepositoryContract;
 use Plenty\Plugin\Application;
+use Plenty\Modules\Order\Shipping\Countries\Contracts\CountryRepositoryContract;
+use Plenty\Modules\System\Contracts\SystemInformationRepositoryContract;
 use Plenty\Plugin\Log\Loggable;
 
 /**
@@ -456,6 +458,7 @@ class NovalnetAssistant extends WizardProvider
     */
     public function CreateOptionalPaymentDisplayConfiguration($config, $paymentMethodKey)
     {
+        $deliveryCountries = $this->getSpecificDeliveryCountries();
         $config['steps'][$paymentMethodKey]['sections'][]['form'] =
         [
             $paymentMethodKey . 'MinimumOrderAmount' =>
@@ -482,9 +485,12 @@ class NovalnetAssistant extends WizardProvider
             ],
             $paymentMethodKey . 'AllowedCountry' =>
             [
-               'type'       => 'text',
+               'type'           => 'checkboxGroup',
+               'defaultValue'   => $this->getDefaultCountries($deliveryCountries),
                'options'    => [
-                                'name'      => 'NovalnetAssistant.novalnetAllowedCountryLabel'
+                                'name'      => 'NovalnetAssistant.novalnetAllowedCountryLabel',
+                                'required' => true,
+
                                ]
             ]
         ];
@@ -752,5 +758,86 @@ class NovalnetAssistant extends WizardProvider
                                           ];
         }
         return $googlePayButtonTypes;
+    }
+
+      /**
+     * @return array
+     */
+    protected function getSpecificDeliveryCountries(): array
+    {
+        $deliveryCountries = [];
+        $allowedCountries = [
+            1, //'DE',
+            2, //'AT',
+            3, // 'BE',
+            4, // 'CH',
+            5, //'CY',
+            8, //'ES',
+            9, //'EE',
+            10, //'FR',
+            11, //'FI',
+            13, //'GR',
+            15, //'IT',
+            16, //'IE',
+            17, //'LU',
+            18, //'LV',
+            19, //'MT',
+            21, //'NL',
+            22, //'PT',
+            26, //'SK',
+            27, //'SI'
+            33, //'LT',
+            35, //'MC',
+            71, //'AD',
+            131, //'GI',
+            212, //'SM',
+        ];
+
+        /** @var CountryRepositoryContract $countryRepository */
+        $countryRepository = pluginApp(CountryRepositoryContract::class);
+        $systemLanguage = $this->getLanguage();
+        $countries = $countryRepository->getCountriesList(null, ['names']);
+        /** @var Country $country */
+        foreach ($countries as $country) {
+            if (count($allowedCountries) <= 0 || array_search($country->id, $allowedCountries) !== false) {
+                $name = $country->names->where('lang', $systemLanguage)->first()->name;
+                $deliveryCountries[$country->id] = [
+                    'caption' => $name ?? $country->name,
+                    'value' => $country->id
+                ];
+            }
+        }
+
+        return $deliveryCountries;
+    }
+
+    /**
+     * Load the active country values
+     */
+    protected function getDefaultCountries($availableCountries = array())
+    {
+
+        /** @var CountryRepositoryContract $countryRepository */
+        $countryRepository = pluginApp(CountryRepositoryContract::class);
+        $activeCountries = $countryRepository->getActiveCountriesList();
+        /** @var Country $country */
+        foreach ($activeCountries as $country) {
+            $this->activeCountries[$country->id] = $country->isoCode2;
+        }
+        
+        return array_column(array_intersect_key($availableCountries, $this->activeCountries), 'value');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getLanguage()
+    {
+
+        /** @var SystemInformationRepositoryContract $systemInformationRepository */
+        $systemInformationRepository = pluginApp(SystemInformationRepositoryContract::class);
+        // TODO: this seems not be the log-in language. Where to get it?
+        $this->language = $systemInformationRepository->loadValue('systemLang');
+        return $this->language;
     }
 }
