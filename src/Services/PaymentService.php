@@ -146,24 +146,27 @@ class PaymentService
      *
      * @return bool
      */
-    public function allowedCountries(Basket $basket, $allowedCountry)
+    public function allowedCountries(Basket $basket, array $allowedCountries): bool
     {
-        $allowedCountry = str_replace(' ', '', strtoupper($allowedCountry));
-        $allowedCountryArray = explode(',', $allowedCountry);
+        $allowedCountries = array_map('strtoupper', $allowedCountries);
+    
         try {
-            if(!is_null($basket) && $basket instanceof Basket && !empty($basket->customerInvoiceAddressId)) {
-                $billingAddressId = $basket->customerInvoiceAddressId;
-                $billingAddress = $this->paymentHelper->getCustomerAddress((int) $billingAddressId);
-                $country = $this->countryRepository->findIsoCode($billingAddress->countryId, 'iso_code_2');
-                if(!empty($billingAddress) && !empty($country) && in_array($country, $allowedCountryArray)) {
-                    return true;
-                }
+            if (!empty($basket->customerInvoiceAddressId)) {
+                $billingAddress = $this->paymentHelper
+                    ->getCustomerAddress((int) $basket->customerInvoiceAddressId);
+    
+                $country = $this->countryRepository
+                    ->findIsoCode($billingAddress->countryId, 'iso_code_2');
+    
+                return in_array($country, $allowedCountries, true);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
+    
         return false;
     }
+    
 
     /**
      * Show payment for Minimum Order Amount
