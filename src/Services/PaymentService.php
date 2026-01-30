@@ -784,7 +784,7 @@ class PaymentService
                     // Get the billing and shipping details
                     $billingShippingDetails = $this->paymentHelper->getBillingShippingDetails($billingAddress, $shippingAddress);
                     // Set the minimum guaranteed amount
-                    $configuredMinimumGuaranteedAmount = $this->settingsService->getPaymentSettingsValue('minimum_order_amount', $paymentKey);
+                    $configuredMinimumGuaranteedAmount = ($this->settingsService->getPaymentSettingsValue('minimum_order_amount', $paymentKey) * 100);
                     $minimumGuaranteedAmount = (!empty($configuredMinimumGuaranteedAmount) && $configuredMinimumGuaranteedAmount >= 999) ? $configuredMinimumGuaranteedAmount : 999;
                     // Get the basket total amount
                     $basketAmount = !empty($basket->basketAmount) ? $this->paymentHelper->convertAmountToSmallerUnit($basket->basketAmount) : $this->sessionStorage->getPlugin()->getValue('nnOrderAmount');

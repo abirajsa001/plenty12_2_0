@@ -460,16 +460,22 @@ class NovalnetAssistant extends WizardProvider
         [
             $paymentMethodKey . 'MinimumOrderAmount' =>
             [
-                'type'      => 'text',
+                'type'          => 'double',
+                'defaultValue'  => 0,
                 'options'   => [
+                                'isPriceInput' => true,
+                                'decimalCount' => 2,
                                 'name'      => 'NovalnetAssistant.novalnetMinimumOrderAmountLabel',
                                 'tooltip'   => 'NovalnetAssistant.novalnetMinimumOrderAmountTooltip'
                                ]
             ],
             $paymentMethodKey . 'MaximumOrderAmount' =>
             [
-                'type'      => 'text',
+                'type'          => 'double',
+                'defaultValue'  => 0,
                 'options'   => [
+                                'isPriceInput' => true,
+                                'decimalCount' => 2,
                                 'name'      => 'NovalnetAssistant.novalnetMaximumOrderAmountLabel',
                                 'tooltip'   => 'NovalnetAssistant.novalnetMaximumOrderAmountTooltip',
                                ]
