@@ -138,92 +138,87 @@ class PaymentService
         && $this->settingsService->getPaymentSettingsValue('novalnet_tariff_id') != '');
     }
 
-    /**
-     * Show payment for allowed countries
-     *
-     * @param  object $basket
-     * @param string $allowedCountry
-     *
-     * @return bool
-     */
-    public function allowedCountries(Basket $basket, $allowedCountry): bool
-    {
-        // LOG: raw config (safe logging)
-        $this->getLogger(__METHOD__)->error('Allowed countries raw value', [
-            'is_array' => is_array($allowedCountry),
-            'count'    => is_array($allowedCountry) ? count($allowedCountry) : 0
-        ]);
-    
-        // Normalize allowed countries
-        $allowedCountries = [];
-    
-        if (is_array($allowedCountry)) {
-            foreach ($allowedCountry as $country) {
-                $allowedCountries[] = strtoupper(trim($country));
-            }
-        } else {
-            $allowedCountries = array_map(
-                fn($c) => strtoupper(trim($c)),
-                explode(',', (string) $allowedCountry)
-            );
-        }
-    
-        // LOG: normalized countries
-        $this->getLogger(__METHOD__)->error('Normalized allowed countries', [
-            'allowedCountries' => $allowedCountries
-        ]);
-    
-        try {
-            if (empty($basket) || !$basket instanceof Basket) {
-                $this->getLogger(__METHOD__)->error('Basket is invalid or empty');
-                return false;
-            }
-    
-            if (empty($basket->customerInvoiceAddressId)) {
-                $this->getLogger(__METHOD__)->error('Invoice address ID missing in basket');
-                return false;
-            }
-    
-            // Get billing address
-            $billingAddress = $this->paymentHelper->getCustomerAddress(
-                (int) $basket->customerInvoiceAddressId
-            );
-    
-            if (empty($billingAddress) || empty($billingAddress->country)) {
-                $this->getLogger(__METHOD__)->error('Billing address or country missing');
-                return false;
-            }
-    
-            // Customer country name
-            $customerCountry = $billingAddress->country->id;
-    
-            // LOG: customer country
-            $this->getLogger(__METHOD__)->error('Customer country', [
-                'customerCountry' => $customerCountry,
-                'countryId'  => $billingAddress->country->id,
-                'billingAddressCountryid' => $billingAddress->countryId,
-                'billingAddressCountry' => $billingAddress->country,
-                'billingAddress' => $billingAddress,
-            ]);
-    
-            // Compare
-            $isAllowed = in_array($customerCountry, $allowedCountries, true);
-    
-            // LOG: result
-            $this->getLogger(__METHOD__)->error('Allowed country check result', [
-                'result' => $isAllowed
-            ]);
-    
-            return $isAllowed;
-    
-        } catch (\Throwable $e) {
-            $this->getLogger(__METHOD__)->error('Allowed country check exception', [
-                'message' => $e->getMessage()
-            ]);
+/**
+ * Show payment for allowed countries
+ *
+ * @param Basket $basket
+ * @param mixed  $allowedCountry   // array of country IDs: ["1","2"] or [1,2]
+ *
+ * @return bool
+ */
+public function allowedCountries(Basket $basket, $allowedCountry): bool
+{
+    // LOG: raw config
+    $this->getLogger(__METHOD__)->error('Allowed countries raw value', [
+        'is_array' => is_array($allowedCountry),
+        'value'    => $allowedCountry
+    ]);
+
+    // Normalize allowed countries to INT IDs
+    $allowedCountries = [];
+
+    if (is_array($allowedCountry)) {
+        $allowedCountries = array_map('intval', $allowedCountry);
+    } else {
+        $allowedCountries = array_map(
+            'intval',
+            explode(',', (string) $allowedCountry)
+        );
+    }
+
+    // LOG: normalized allowed country IDs
+    $this->getLogger(__METHOD__)->error('Normalized allowed country IDs', [
+        'allowedCountries' => $allowedCountries
+    ]);
+
+    try {
+        // Validate basket
+        if (empty($basket) || !$basket instanceof Basket) {
+            $this->getLogger(__METHOD__)->error('Basket is invalid or empty');
             return false;
         }
+
+        if (empty($basket->customerInvoiceAddressId)) {
+            $this->getLogger(__METHOD__)->error('Invoice address ID missing in basket');
+            return false;
+        }
+
+        // Get billing address
+        $billingAddress = $this->paymentHelper->getCustomerAddress(
+            (int) $basket->customerInvoiceAddressId
+        );
+
+        if (empty($billingAddress) || empty($billingAddress->country)) {
+            $this->getLogger(__METHOD__)->error('Billing address or country missing');
+            return false;
+        }
+
+        // Customer country ID (INT)
+        $customerCountryId = (int) $billingAddress->country->id;
+
+        // LOG: customer country ID
+        $this->getLogger(__METHOD__)->error('Customer country ID', [
+            'customerCountryId' => $customerCountryId
+        ]);
+
+        // FINAL CHECK (STRICT + CORRECT)
+        $isAllowed = in_array($customerCountryId, $allowedCountries, true);
+
+        // LOG: result
+        $this->getLogger(__METHOD__)->error('Allowed country check result', [
+            'result' => $isAllowed
+        ]);
+
+        return $isAllowed;
+
+    } catch (\Throwable $e) {
+        $this->getLogger(__METHOD__)->error('Allowed country check exception', [
+            'message' => $e->getMessage()
+        ]);
+        return false;
     }
-    
+}
+
     
 
     /**
