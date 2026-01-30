@@ -489,8 +489,8 @@ class NovalnetAssistant extends WizardProvider
                'defaultValue'   => $this->getDefaultCountries($deliveryCountries),
                'options'    => [
                                 'name'      => 'NovalnetAssistant.novalnetAllowedCountryLabel',
-                                'required' => true,
-
+                                'required' => false,
+                                'checkboxValues' => array_values($deliveryCountries)
                                ]
             ]
         ];
