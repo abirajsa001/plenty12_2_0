@@ -148,45 +148,74 @@ class PaymentService
      */
     public function allowedCountries(Basket $basket, $allowedCountry): bool
     {
-        // Normalize allowed countries (config → array of uppercase names)
-        if (is_array($allowedCountry)) {
-            $allowedCountries = array_map(
-                fn($c) => strtoupper(trim($c)),
-                $allowedCountry
-            );
-        } else {
-            $allowedCountries = array_map(
-                'trim',
-                explode(',', strtoupper($allowedCountry))
-            );
+        // 1. Normalize allowed countries (ALWAYS array of uppercase names)
+        $allowedCountries = [];
+    
+        foreach ((array) $allowedCountry as $country) {
+            if (!empty($country)) {
+                $allowedCountries[] = strtoupper(trim($country));
+            }
         }
     
-        try {
-            if (
-                !empty($basket)
-                && $basket instanceof Basket
-                && !empty($basket->customerInvoiceAddressId)
-            ) {
-                // Get billing address
-                $billingAddress = $this->paymentHelper->getCustomerAddress(
-                    (int) $basket->customerInvoiceAddressId
-                );
-    
-                if (empty($billingAddress) || empty($billingAddress->country)) {
-                    return false;
-                }
-    
-                // Retrieve customer country NAME
-                $customerCountryName = strtoupper(trim($billingAddress->country->name));
-    
-                // Compare by country name
-                return in_array($customerCountryName, $allowedCountries, true);
-            }
-        } catch (\Exception $e) {
+        if (empty($allowedCountries)) {
             return false;
         }
     
-        return false;
+        try {
+            // 2. Validate basket & billing address
+            if (
+                empty($basket) ||
+                !$basket instanceof Basket ||
+                empty($basket->customerInvoiceAddressId)
+            ) {
+                return false;
+            }
+    
+            // 3. Get billing address
+            $billingAddress = $this->paymentHelper->getCustomerAddress(
+                (int) $basket->customerInvoiceAddressId
+            );
+    
+            if (empty($billingAddress)) {
+                return false;
+            }
+    
+            /**
+             * ⚠️ IMPORTANT:
+             * In most systems, country name is stored as:
+             * $billingAddress->countryName
+             * OR
+             * $billingAddress->country->name
+             * OR
+             * $billingAddress->countryNameEn
+             *
+             * This handles all common cases safely.
+             */
+            $customerCountryName = null;
+    
+            if (!empty($billingAddress->country->name)) {
+                $customerCountryName = $billingAddress->country->name;
+            } elseif (!empty($billingAddress->countryName)) {
+                $customerCountryName = $billingAddress->countryName;
+            } elseif (!empty($billingAddress->country_name)) {
+                $customerCountryName = $billingAddress->country_name;
+            }
+    
+            if (empty($customerCountryName)) {
+                return false;
+            }
+    
+            // 4. Normalize customer country name
+            $customerCountryName = strtoupper(trim($customerCountryName));
+    
+            // 5. Final comparison
+            return in_array($customerCountryName, $allowedCountries, true);
+    
+        } catch (\Throwable $e) {
+            // optional: log error
+            // logger()->error($e->getMessage());
+            return false;
+        }
     }
     
     
