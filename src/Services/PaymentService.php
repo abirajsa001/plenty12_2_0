@@ -146,19 +146,41 @@ class PaymentService
      *
      * @return bool
      */
-    public function allowedCountries(Basket $basket, array $allowedCountries): bool
+    public function allowedCountries(Basket $basket, $allowedCountry): bool
     {
-        $allowedCountries = array_map('strtoupper', $allowedCountries);
+        // Normalize allowed countries (config → array of uppercase names)
+        if (is_array($allowedCountry)) {
+            $allowedCountries = array_map(
+                fn($c) => strtoupper(trim($c)),
+                $allowedCountry
+            );
+        } else {
+            $allowedCountries = array_map(
+                'trim',
+                explode(',', strtoupper($allowedCountry))
+            );
+        }
     
         try {
-            if (!empty($basket->customerInvoiceAddressId)) {
-                $billingAddress = $this->paymentHelper
-                    ->getCustomerAddress((int) $basket->customerInvoiceAddressId);
+            if (
+                !empty($basket)
+                && $basket instanceof Basket
+                && !empty($basket->customerInvoiceAddressId)
+            ) {
+                // Get billing address
+                $billingAddress = $this->paymentHelper->getCustomerAddress(
+                    (int) $basket->customerInvoiceAddressId
+                );
     
-                $country = $this->countryRepository
-                    ->findIsoCode($billingAddress->countryId, 'iso_code_2');
+                if (empty($billingAddress) || empty($billingAddress->country)) {
+                    return false;
+                }
     
-                return in_array($country, $allowedCountries, true);
+                // Retrieve customer country NAME
+                $customerCountryName = strtoupper(trim($billingAddress->country->name));
+    
+                // Compare by country name
+                return in_array($customerCountryName, $allowedCountries, true);
             }
         } catch (\Exception $e) {
             return false;
@@ -166,6 +188,7 @@ class PaymentService
     
         return false;
     }
+    
     
 
     /**
