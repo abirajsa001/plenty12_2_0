@@ -199,7 +199,11 @@ class PaymentService
     
             // LOG: customer country
             $this->getLogger(__METHOD__)->error('Customer country', [
-                'customerCountry' => $customerCountry
+                'customerCountry' => $customerCountry,
+                'countryId'  => $billingAddress->country->id,
+                'billingAddressCountryid' => $billingAddress->countryId,
+                'billingAddressCountry' => $billingAddress->country,
+                'billingAddress' => $billingAddress,
             ]);
     
             // Compare
