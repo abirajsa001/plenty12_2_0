@@ -195,7 +195,7 @@ class PaymentService
             }
     
             // Customer country name
-            $customerCountry = strtoupper(trim($billingAddress->country->name));
+            $customerCountry = $billingAddress->country->id;
     
             // LOG: customer country
             $this->getLogger(__METHOD__)->error('Customer country', [
