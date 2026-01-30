@@ -148,72 +148,80 @@ class PaymentService
      */
     public function allowedCountries(Basket $basket, $allowedCountry): bool
     {
-        // 1. Normalize allowed countries (ALWAYS array of uppercase names)
+        // LOG: raw config
+        $this->getLogger(__METHOD__)->error('Allowed countries raw value', [
+            'value' => $allowedCountry,
+            'type'  => gettype($allowedCountry)
+        ]);
+    
+        // Normalize allowed countries
         $allowedCountries = [];
     
-        foreach ((array) $allowedCountry as $country) {
-            if (!empty($country)) {
+        if (is_array($allowedCountry)) {
+            foreach ($allowedCountry as $country) {
                 $allowedCountries[] = strtoupper(trim($country));
             }
+        } else {
+            $allowedCountries = array_map(
+                fn($c) => strtoupper(trim($c)),
+                explode(',', $allowedCountry)
+            );
         }
     
-        if (empty($allowedCountries)) {
-            return false;
-        }
+        // LOG: normalized countries
+        $this->getLogger(__METHOD__)->error('Normalized allowed countries', [
+            'allowedCountries' => $allowedCountries
+        ]);
     
         try {
-            // 2. Validate basket & billing address
-            if (
-                empty($basket) ||
-                !$basket instanceof Basket ||
-                empty($basket->customerInvoiceAddressId)
-            ) {
+            if (empty($basket) || !$basket instanceof Basket) {
+                $this->getLogger(__METHOD__)->error('Basket is invalid or empty');
                 return false;
             }
     
-            // 3. Get billing address
+            if (empty($basket->customerInvoiceAddressId)) {
+                $this->getLogger(__METHOD__)->error('Invoice address ID missing in basket');
+                return false;
+            }
+    
+            // Get billing address
             $billingAddress = $this->paymentHelper->getCustomerAddress(
                 (int) $basket->customerInvoiceAddressId
             );
     
-            if (empty($billingAddress)) {
+            // LOG: billing address
+            $this->getLogger(__METHOD__)->error('Billing address retrieved', [
+                'billingAddress' => (array) $billingAddress
+            ]);
+    
+            if (empty($billingAddress) || empty($billingAddress->country)) {
+                $this->getLogger(__METHOD__)->error('Billing address or country missing');
                 return false;
             }
     
-            /**
-             * ⚠️ IMPORTANT:
-             * In most systems, country name is stored as:
-             * $billingAddress->countryName
-             * OR
-             * $billingAddress->country->name
-             * OR
-             * $billingAddress->countryNameEn
-             *
-             * This handles all common cases safely.
-             */
-            $customerCountryName = null;
+            // Get customer country name
+            $customerCountry = strtoupper(trim($billingAddress->country->name));
     
-            if (!empty($billingAddress->country->name)) {
-                $customerCountryName = $billingAddress->country->name;
-            } elseif (!empty($billingAddress->countryName)) {
-                $customerCountryName = $billingAddress->countryName;
-            } elseif (!empty($billingAddress->country_name)) {
-                $customerCountryName = $billingAddress->country_name;
-            }
+            // LOG: customer country
+            $this->getLogger(__METHOD__)->error('Customer country', [
+                'customerCountry' => $customerCountry
+            ]);
     
-            if (empty($customerCountryName)) {
-                return false;
-            }
+            // Compare
+            $isAllowed = in_array($customerCountry, $allowedCountries, true);
     
-            // 4. Normalize customer country name
-            $customerCountryName = strtoupper(trim($customerCountryName));
+            // LOG: result
+            $this->getLogger(__METHOD__)->error('Allowed country check result', [
+                'result' => $isAllowed
+            ]);
     
-            // 5. Final comparison
-            return in_array($customerCountryName, $allowedCountries, true);
+            return $isAllowed;
     
         } catch (\Throwable $e) {
-            // optional: log error
-            // logger()->error($e->getMessage());
+            $this->getLogger(__METHOD__)->error('Allowed country check exception', [
+                'message' => $e->getMessage(),
+                'trace'   => $e->getTraceAsString()
+            ]);
             return false;
         }
     }
