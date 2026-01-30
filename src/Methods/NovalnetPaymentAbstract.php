@@ -112,7 +112,8 @@ abstract class NovalnetPaymentAbstract extends PaymentMethodBaseService
 
             // Check if the Maximum order amount value met to payment display condition
             $activatePaymentMaximumAmount = true;
-            $maximumAmount = trim($this->settingsService->getPaymentSettingsValue('maximum_order_amount', strtolower($this::PAYMENT_KEY)));
+            $value = trim($this->settingsService->getPaymentSettingsValue('maximum_order_amount', strtolower($this::PAYMENT_KEY)));
+            $maximumAmount = ((float) ($value ?? 0)) * 100;
             if(!empty($maximumAmount) && is_numeric($maximumAmount)) {
                 $activatePaymentMaximumAmount = $this->paymentService->getMaxBasketAmount($this->basketRepository, $maximumAmount);
             }
