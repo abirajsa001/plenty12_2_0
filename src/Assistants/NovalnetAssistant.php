@@ -768,7 +768,7 @@ class NovalnetAssistant extends WizardProvider
     {
         $deliveryCountries = [];
         switch ($paymentMethodKey) {
-            case NovalnetPrepaymentPaymentMethod::PAYMENT_KEY:
+            case 'novalnetPrepayment':
                 $allowedCountries = [
                     1, // DE
                     2, // AT
