@@ -458,7 +458,7 @@ class NovalnetAssistant extends WizardProvider
     */
     public function CreateOptionalPaymentDisplayConfiguration($config, $paymentMethodKey)
     {
-        $deliveryCountries = $this->getSpecificDeliveryCountries();
+        $deliveryCountries = $this->getSpecificDeliveryCountries($paymentMethodKey);
         $config['steps'][$paymentMethodKey]['sections'][]['form'] =
         [
             $paymentMethodKey . 'MinimumOrderAmount' =>
@@ -763,11 +763,21 @@ class NovalnetAssistant extends WizardProvider
       /**
      * @return array
      */
-    protected function getSpecificDeliveryCountries(): array
+    protected function getSpecificDeliveryCountries($paymentMethodKey): array
     {
         $deliveryCountries = [];
-        $allowedCountries = [];
-
+        switch ($paymentMethodKey) {
+            case NovalnetPrepaymentPaymentMethod::PAYMENT_KEY,
+                $allowedCountries = [
+                    1, // DE
+                    2, // AT
+                    4  // CH
+                ];
+                break;
+            default:
+                $allowedCountries = [];
+                break;
+        }
         /** @var CountryRepositoryContract $countryRepository */
         $countryRepository = pluginApp(CountryRepositoryContract::class);
         $systemLanguage = $this->getLanguage();
