@@ -16,6 +16,7 @@ use Plenty\Modules\System\Contracts\WebstoreRepositoryContract;
 use Plenty\Plugin\Application;
 use Plenty\Modules\Order\Shipping\Countries\Contracts\CountryRepositoryContract;
 use Plenty\Modules\System\Contracts\SystemInformationRepositoryContract;
+use Novalnet\Methods\NovalnetPrepaymentPaymentMethod;
 use Plenty\Plugin\Log\Loggable;
 
 /**
