@@ -835,33 +835,33 @@ class NovalnetAssistant extends WizardProvider
                 break;
             case 'novalnetIdeal':
                 $allowedCountries = [
-                    21, // NL,
+                    21, // NL
                 ];
                 break;
             case 'novalnetPrzelewy24':
                 $allowedCountries = [
-                    20, // PL,
+                    20, // PL
                 ];
                 break;
             case 'novalnetEps':
                 $allowedCountries = [
-                    2, // AT,
+                    2, // AT
                 ];
                 break; 
             case 'novalnetPostfinanceCard':
             case 'novalnetPostfinanceEfinance':
                 $allowedCountries = [
-                    4, // CH,
+                    4, // CH
                 ];
                 break;    
             case 'novalnetBancontact':
                 $allowedCountries = [
-                    3, // BE,
+                    3, // BE
                 ];
                 break;  
             case 'novalnetMultibanco':
                 $allowedCountries = [
-                    22, // PT,
+                    22, // PT
                 ];
                 break; 
             case 'novalnetOnlineBankTransfer':
@@ -888,25 +888,25 @@ class NovalnetAssistant extends WizardProvider
                 break; 
             case 'novalnetWechatPay':
                 $allowedCountries = [
-                    32, // CN,
-                    10, // FR, 
-                    2,  // AT,
+                    32, // CN
+                    10, // FR
+                    2,  // AT
                 ];
                 break;        
             case 'novalnetBlik':
                 $allowedCountries = [
-                    20, // PL,
+                    20, // PL
                 ];
                 break;  
             case 'novalnetPayconiq':
                 $allowedCountries = [
-                    1, // DE,
+                    1, // DE
                     17, // LU
                 ];
                 break;   
             case 'novalnetMbway':
                 $allowedCountries = [
-                    22, // PT,
+                    22, // PT
                 ];
                 break;
             case 'novalnetAch':
@@ -916,7 +916,7 @@ class NovalnetAssistant extends WizardProvider
                 break;
             case 'novalnetTwint':
                 $allowedCountries = [
-                    4, // CH,
+                    4, // CH
                 ];
                 break;       
             case 'novalnetCc':
