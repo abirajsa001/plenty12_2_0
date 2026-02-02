@@ -16,7 +16,6 @@ use Plenty\Modules\System\Contracts\WebstoreRepositoryContract;
 use Plenty\Plugin\Application;
 use Plenty\Modules\Order\Shipping\Countries\Contracts\CountryRepositoryContract;
 use Plenty\Modules\System\Contracts\SystemInformationRepositoryContract;
-use Novalnet\Methods\NovalnetPrepaymentPaymentMethod;
 use Plenty\Plugin\Log\Loggable;
 
 /**
@@ -768,13 +767,154 @@ class NovalnetAssistant extends WizardProvider
     {
         $deliveryCountries = [];
         switch ($paymentMethodKey) {
-            case 'novalnetPrepayment':
+            case 'novalnetSepa':
+            case 'novalnetInvoice':
+            case 'novlanetPrepayment':
                 $allowedCountries = [
-                    1, // DE
-                    2, // AT
-                    4  // CH
+                    1,  // DE 
+                    2,  // AT 
+                    3,  // BE 
+                    5,  // CY 
+                    6,  // CZ 
+                    7,  // DK 
+                    8,  // ES 
+                    9,  // EE 
+                    10, // FR 
+                    11, // FI 
+                    13, // GR 
+                    14, // HU 
+                    15, // IT 
+                    16, // IE 
+                    17, // LU
+                    18, // LV
+                    19, // MT
+                    21, // NL
+                    22, // PT
+                    26, //'SK',
+                    27, //'SI'
+                    33, //'LT',
+                    35, //'MC',
+                    71, //'AD',
+                    131, //'GI',
+                    212, //'SM',
                 ];
                 break;
+            case 'novalnetGuaranteedInvoice':
+            case 'novalnetGuaranteedInvoice':
+            case 'novalnetInstalmentInvoice':
+            case 'novalnetInstalmentSepa':
+                $allowedCountries = [
+                    1,  // DE 
+                    2,  // AT 
+                    3,  // BE 
+                    4,  // CH
+                    5,  // CY 
+                    6,  // CZ 
+                    7,  // DK 
+                    8,  // ES 
+                    9,  // EE 
+                    10, // FR 
+                    11, // FI 
+                    13, // GR 
+                    14, // HU 
+                    15, // IT 
+                    16, // IE 
+                    17, // LU
+                    18, // LV
+                    19, // MT
+                    21, // NL
+                    22, // PT
+                    26, //'SK',
+                    27, //'SI'
+                    33, //'LT',
+                    35, //'MC',
+                    71, //'AD',
+                    131, //'GI',
+                    212, //'SM',
+                ];
+                break;
+            case 'novalnetIdeal':
+                $allowedCountries = [
+                    21, // NL,
+                ];
+                break;
+            case 'novalnetPrzelewy24':
+                $allowedCountries = [
+                    20, // PL,
+                ];
+                break;
+            case 'novalnetEps':
+                $allowedCountries = [
+                    2, // AT,
+                ];
+                break; 
+            case 'novalnetPostfinanceCard':
+            case 'novalnetPostfinanceEfinance':
+                $allowedCountries = [
+                    4, // CH,
+                ];
+                break;    
+            case 'novalnetBancontact':
+                $allowedCountries = [
+                    3, // BE,
+                ];
+                break;  
+            case 'novalnetMultibanco':
+                $allowedCountries = [
+                    22, // PT,
+                ];
+                break; 
+            case 'novalnetOnlineBankTransfer':
+                $allowedCountries = [
+                    1, // DE,
+                ];
+                break;    
+            case 'novalnetAlipay':
+                $allowedCountries = [
+                    32, // CN
+                ];
+                break; 
+            case 'novalnetWechatPay':
+                $allowedCountries = [
+                    32, // CN,
+                    10, // FR, 
+                    2, // AT,
+                ];
+                break; 
+            case 'novalnetTrustly':
+                $allowedCountries = [
+                    1, // DE,
+                ];
+                break;         
+            case 'novalnetBlik':
+                $allowedCountries = [
+                    20, // PL,
+                ];
+                break;  
+            case 'novalnetPayconiq':
+                $allowedCountries = [
+                    1, // DE,
+                    17, // LU
+                ];
+                break;   
+            case 'novalnetMbway':
+                $allowedCountries = [
+                    22, // PT,
+                ];
+                break;
+            case 'novalnetAch':
+                $allowedCountries = [
+                    28, // US
+                ];
+                break;
+            case 'novalnetTwint':
+                $allowedCountries = [
+                    4, // CH,
+                ];
+                break;       
+            case 'novalnetCc':
+            case 'novalnetApplepay':
+            case 'novalnetGooglepay':
             default:
                 $allowedCountries = [];
                 break;
