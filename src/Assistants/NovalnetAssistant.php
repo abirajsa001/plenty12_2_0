@@ -824,13 +824,13 @@ class NovalnetAssistant extends WizardProvider
                     19, // MT
                     21, // NL
                     22, // PT
-                    26, //'SK',
+                    26, //'SK'
                     27, //'SI'
-                    33, //'LT',
-                    35, //'MC',
-                    71, //'AD',
-                    131, //'GI',
-                    212, //'SM',
+                    33, //'LT'
+                    35, //'MC'
+                    71, //'AD'
+                    131, //'GI'
+                    212, //'SM'
                 ];
                 break;
             case 'novalnetIdeal':
@@ -865,8 +865,21 @@ class NovalnetAssistant extends WizardProvider
                 ];
                 break; 
             case 'novalnetOnlineBankTransfer':
+            case 'novalnetTrustly':
                 $allowedCountries = [
-                    1, // DE,
+                    1,  // DE
+                    2,  // AT
+                    7,  // DK
+                    12, // GB
+                    9,  // EE
+                    8,  // ES
+                    11, // FI
+                    12, // UK
+                    33, // LT
+                    18, // LV
+                    21, // NL
+                    20, // NO
+                    24, // SE
                 ];
                 break;    
             case 'novalnetAlipay':
@@ -878,14 +891,9 @@ class NovalnetAssistant extends WizardProvider
                 $allowedCountries = [
                     32, // CN,
                     10, // FR, 
-                    2, // AT,
+                    2,  // AT,
                 ];
-                break; 
-            case 'novalnetTrustly':
-                $allowedCountries = [
-                    1, // DE,
-                ];
-                break;         
+                break;        
             case 'novalnetBlik':
                 $allowedCountries = [
                     20, // PL,
