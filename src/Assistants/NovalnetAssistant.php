@@ -766,32 +766,7 @@ class NovalnetAssistant extends WizardProvider
     protected function getSpecificDeliveryCountries(): array
     {
         $deliveryCountries = [];
-        $allowedCountries = [
-            1, //'DE',
-            2, //'AT',
-            3, // 'BE',
-            4, // 'CH',
-            5, //'CY',
-            8, //'ES',
-            9, //'EE',
-            10, //'FR',
-            11, //'FI',
-            13, //'GR',
-            15, //'IT',
-            16, //'IE',
-            17, //'LU',
-            18, //'LV',
-            19, //'MT',
-            21, //'NL',
-            22, //'PT',
-            26, //'SK',
-            27, //'SI'
-            33, //'LT',
-            35, //'MC',
-            71, //'AD',
-            131, //'GI',
-            212, //'SM',
-        ];
+        $allowedCountries = [];
 
         /** @var CountryRepositoryContract $countryRepository */
         $countryRepository = pluginApp(CountryRepositoryContract::class);
