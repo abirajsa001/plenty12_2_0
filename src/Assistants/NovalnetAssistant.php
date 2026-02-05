@@ -949,7 +949,7 @@ class NovalnetAssistant extends WizardProvider
      */
     protected function getDefaultCountries($availableCountries = array())
     {
-
+        if ($this->activeCountries === null) {
         /** @var CountryRepositoryContract $countryRepository */
         $countryRepository = pluginApp(CountryRepositoryContract::class);
         $activeCountries = $countryRepository->getActiveCountriesList();
@@ -957,7 +957,7 @@ class NovalnetAssistant extends WizardProvider
         foreach ($activeCountries as $country) {
             $this->activeCountries[$country->id] = $country->isoCode2;
         }
-        
+        }
         return array_column(array_intersect_key($availableCountries, $this->activeCountries), 'value');
     }
 
