@@ -24,8 +24,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="input-unit">
-                    <input type="text" name="nn_account_holder" id="nn_account_holder"  value="{{AccountHolderName}}" pattern="^[A-Za-zäöüÄÖÜß\s]+$"
-           oninput="this.value = this.value.replace(/[^A-Za-zäöüÄÖÜß\s]/g, '')" required>
+                    <input type="text" name="nn_account_holder" id="nn_account_holder"  value="{{AccountHolderName}}" pattern="^[\p{L}\p{M} .\-']+$"
+           oninput="this.value = this.value.replace(/[^\p{L}\p{M} .\-']/gu, '')" required>
                     <label for="nn_account_holder">{{trans("Novalnet::Customize.template_account_holder_label")}}*</label>
                 </div>
             </div>

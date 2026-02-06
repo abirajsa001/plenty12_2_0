@@ -486,7 +486,7 @@ class NovalnetAssistant extends WizardProvider
             $paymentMethodKey . 'AllowedCountry' =>
             [
                'type'           => 'checkboxGroup',
-               'defaultValue'   => $this->getDefaultCountries($deliveryCountries),
+               'defaultValue'   => array_values($this->getDefaultCountries($deliveryCountries)),
                'options'    => [
                                 'name'      => 'NovalnetAssistant.novalnetAllowedCountryLabel',
                                 'required' => false,
@@ -947,18 +947,20 @@ class NovalnetAssistant extends WizardProvider
     /**
      * Load the active country values
      */
-    protected function getDefaultCountries($availableCountries = array())
+    protected function getDefaultCountries(array $availableCountries = []): array
     {
-        if ($this->activeCountries === null) {
+        if (empty($availableCountries)) {
+            return [];
+        }
         /** @var CountryRepositoryContract $countryRepository */
         $countryRepository = pluginApp(CountryRepositoryContract::class);
-        $activeCountries = $countryRepository->getActiveCountriesList();
-        /** @var Country $country */
-        foreach ($activeCountries as $country) {
-            $this->activeCountries[$country->id] = $country->isoCode2;
+        $result = [];
+        foreach ($countryRepository->getActiveCountriesList() as $country) {
+            if (isset($availableCountries[$country->id])) {
+                $result[$country->id] = $country->isoCode2;
+            }
         }
-        }
-        return array_column(array_intersect_key($availableCountries, $this->activeCountries), 'value');
+        return $result;
     }
 
     /**
