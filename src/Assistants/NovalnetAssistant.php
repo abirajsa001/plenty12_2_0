@@ -486,7 +486,7 @@ class NovalnetAssistant extends WizardProvider
             $paymentMethodKey . 'AllowedCountry' =>
             [
                'type'           => 'checkboxGroup',
-               'defaultValue'   => array_values($this->getDefaultCountries($deliveryCountries)),
+               'defaultValue'   => $this->getDefaultCountries($deliveryCountries),
                'options'    => [
                                 'name'      => 'NovalnetAssistant.novalnetAllowedCountryLabel',
                                 'required' => false,
