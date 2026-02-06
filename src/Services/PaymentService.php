@@ -642,7 +642,7 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
             $paymentResponseData = $this->sendPostbackCall($nnPaymentData);
             $nnPaymentData['transaction']['order_no'] = $paymentResponseData['transaction']['order_no'];
             $nnPaymentData['transaction']['invoice_ref'] = $paymentResponseData['transaction']['invoice_ref'];
-            $this->getLogger(__METHOD__)->error('For qr_image test', ['message' => $paymentResponseData]);
+            $this->getLogger(__METHOD__)->error('For qr_image test', ['qr_image_test' => $paymentResponseData]);
             $nnPaymentData['transaction']['qr_image'] = $paymentResponseData['transaction']['bank_details']['qr_image'];
         }
         // Insert payment response into Novalnet table
