@@ -26,6 +26,7 @@ use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
 use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
 use Plenty\Modules\Webshop\Helpers\UrlQuery;
+use Plenty\Modules\Plugin\Contracts\PluginRepositoryContract;
 
 /**
  * Class PaymentService
@@ -309,6 +310,12 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
             unset($paymentRequestData['customer']['shipping']);
             $paymentRequestData['customer']['shipping']['same_as_billing'] = '1';
         }
+        $pluginRepository = pluginApp(PluginRepositoryContract::class);
+        $plugin = $pluginRepository->getPluginByName('plentyShopLTS');
+        $version = $plugin->version;
+        $this->getLogger(__METHOD__)->error('version updated', [
+            'version' => $version
+        ]);
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
