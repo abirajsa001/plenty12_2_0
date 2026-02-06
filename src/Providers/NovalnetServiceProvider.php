@@ -141,7 +141,7 @@ class NovalnetServiceProvider extends ServiceProvider
                 if($paymentKey) {
                     $sessionStorage->getPlugin()->setValue('orderCurrency', null);
                     $paymentRequestData = $paymentService->generatePaymentParams($basketRepository->load(), $paymentKey);
-                if((empty($paymentRequestData['paymentRequestData']['customer']['first_name']) && empty($paymentRequestData['paymentRequestData']['customer']['last_name'])) || empty($paymentRequestData['paymentRequestData']['customer']['email'])) {
+                if((empty($paymentRequestData['paymentRequestData']['customer']['first_name']) || empty($paymentRequestData['paymentRequestData']['customer']['last_name'])) || empty($paymentRequestData['paymentRequestData']['customer']['email'])) {
                     $content = $paymentHelper->getTranslatedText('nn_first_last_name_error');
                     $contentType = 'errorCode';
                    if(empty($paymentRequestData['paymentRequestData']['customer']['email'])){
