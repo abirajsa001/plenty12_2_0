@@ -960,7 +960,6 @@ class NovalnetAssistant extends WizardProvider
         
         return array_column(array_intersect_key($availableCountries, $this->activeCountries), 'value');
     }
-    
 
     /**
      * @return string
