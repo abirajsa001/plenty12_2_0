@@ -26,6 +26,7 @@ use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
 use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Log\Loggable;
 use Plenty\Modules\Webshop\Helpers\UrlQuery;
+use Plenty\Modules\Plugin\Contracts\PluginRepositoryContract;
 
 /**
  * Class PaymentService
@@ -309,6 +310,14 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
             unset($paymentRequestData['customer']['shipping']);
             $paymentRequestData['customer']['shipping']['same_as_billing'] = '1';
         }
+        $pluginRepo = pluginApp(PluginRepositoryContract::class);
+        $plugin = $pluginRepo->getPluginByName("Ceres");
+        if ($plugin) {
+            $version = $plugin->version;
+        }
+        $this->getLogger(__METHOD__)->error('version updated', [
+            'version' =>  $version
+        ]);
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
@@ -643,10 +652,6 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
             $paymentResponseData = $this->sendPostbackCall($nnPaymentData);
             $nnPaymentData['transaction']['order_no'] = $paymentResponseData['transaction']['order_no'];
             $nnPaymentData['transaction']['invoice_ref'] = $paymentResponseData['transaction']['invoice_ref'];
-            $this->getLogger(__METHOD__)->error('For qr_image test', ['qr_image_test' => $paymentResponseData]);
-            $this->getLogger(__METHOD__)->error('For order_no test', ['order_no' =>  $paymentResponseData['transaction']['order_no']]);
-            $this->getLogger(__METHOD__)->error('For invoice_ref test', ['invoice_ref' => $paymentResponseData['transaction']['invoice_ref']]);
-            $this->getLogger(__METHOD__)->error('For bank_details test', ['bank_details' => $paymentResponseData['transaction']['bank_details']['qr_image']]);
             $nnPaymentData['transaction']['qr_image'] = $paymentResponseData['transaction']['bank_details']['qr_image'];
         }
         // Insert payment response into Novalnet table
