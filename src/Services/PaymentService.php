@@ -627,6 +627,7 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
     public function HandlePaymentResponse()
     {
         $nnPaymentData = $this->sessionStorage->getPlugin()->getValue('nnPaymentData');
+        $this->getLogger(__METHOD__)->error('For nnPaymentData', ['nnPaymentData' => $nnPaymentData]);
         $this->sessionStorage->getPlugin()->setValue('nnPaymentData', null);
         $this->sessionStorage->getPlugin()->setValue('nnDoRedirect', null);
         $this->sessionStorage->getPlugin()->setValue('nnGooglePayDoRedirect', null);
@@ -643,6 +644,9 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
             $nnPaymentData['transaction']['order_no'] = $paymentResponseData['transaction']['order_no'];
             $nnPaymentData['transaction']['invoice_ref'] = $paymentResponseData['transaction']['invoice_ref'];
             $this->getLogger(__METHOD__)->error('For qr_image test', ['qr_image_test' => $paymentResponseData]);
+            $this->getLogger(__METHOD__)->error('For order_no test', ['order_no' =>  $paymentResponseData['transaction']['order_no']]);
+            $this->getLogger(__METHOD__)->error('For invoice_ref test', ['invoice_ref' => $paymentResponseData['transaction']['invoice_ref']]);
+            $this->getLogger(__METHOD__)->error('For bank_details test', ['bank_details' => $paymentResponseData['transaction']['bank_details']['qr_image']]);
             $nnPaymentData['transaction']['qr_image'] = $paymentResponseData['transaction']['bank_details']['qr_image'];
         }
         // Insert payment response into Novalnet table
