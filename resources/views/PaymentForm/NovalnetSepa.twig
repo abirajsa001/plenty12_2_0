@@ -1,6 +1,7 @@
 {# Load the css and Js #}
 <link rel="stylesheet" href="{{plugin_path('Novalnet')}}/css/novalnetUi.css">
 <script type="text/javascript" src="https://cdn.novalnet.de/js/v2/NovalnetUtility.js"></script>
+<script defer src="{{plugin_path('Novalnet')}}/js/novalnetValidation.js"></script>
 <script src="{{ plugin_path('Novalnet') }}/js/novalnetSepa.min.js" integrity="sha384-QkYHMI8aQiNPVf1vl7ltWjKceVWcNuZEW6eOINpbfqtgFxXXjuBrJ+rYoH5UQMIE" crossorigin="anonymous"></script>
 <script>
 function isValidAccountHolder(event) {
@@ -47,7 +48,7 @@ function isValidAccountHolder(event) {
         <div class="row">
             <div class="col-12">
                 <div class="input-unit">
-                    <input type="text" name="nn_account_holder" id="nn_account_holder"  value="{{AccountHolderName}}"  onkeypress="return isValidAccountHolder(event)" onkeyup="return isValidAccountHolder(event)" onchange="return isValidAccountHolder(event)" autocomplete="off" required>
+                    <input type="text" name="nn_account_holder" id="nn_account_holder"  value="{{AccountHolderName}}" required>
                     <label for="nn_account_holder">{{trans("Novalnet::Customize.template_account_holder_label")}}*</label>
                 </div>
             </div>
