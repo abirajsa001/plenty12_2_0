@@ -1,6 +1,6 @@
 {# Load the css and Js #}
 <link rel="stylesheet" href="{{plugin_path('Novalnet')}}/css/novalnetUi.css">
-<script defer src="{{plugin_path('Novalnet')}}/js/novalnetValidation.min.js" integrity="sha384-hkv7R2mIsAbxc+ChSh7jYOxo13tvo8T/ywNV12l+hl4/DHTkqlTQEObEro8QAAIW" crossorigin="anonymous"></script>
+<script defer src="{{plugin_path('Novalnet')}}/js/novalnetValidation.min.js" integrity="sha384-1xWZYFHMA/cYvykStlP29ZG5qv88HAlUr5iW0pCEjP15HokFiLmjNf3nuX17BkbG" crossorigin="anonymous"></script>
 
 {# DIRECT DEBIT ACH payment form #}
 <form method="post" id="novalnet_form" name="novalnet_form" action="{{nnPaymentProcessUrl}}">
@@ -24,8 +24,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="input-unit">
-                    <input type="text" name="nn_account_holder" id="nn_account_holder"  value="{{AccountHolderName}}" pattern="^[\p{L}\p{M} .\-']+$"
-           oninput="this.value = this.value.replace(/[^\p{L}\p{M} .\-']/gu, '')" required>
+                    <input type="text" name="nn_account_holder" id="nn_account_holder"  value="{{AccountHolderName}}" required>
                     <label for="nn_account_holder">{{trans("Novalnet::Customize.template_account_holder_label")}}*</label>
                 </div>
             </div>
