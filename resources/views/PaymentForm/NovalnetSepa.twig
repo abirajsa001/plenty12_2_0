@@ -2,6 +2,23 @@
 <link rel="stylesheet" href="{{plugin_path('Novalnet')}}/css/novalnetUi.css">
 <script type="text/javascript" src="https://cdn.novalnet.de/js/v2/NovalnetUtility.js"></script>
 <script src="{{ plugin_path('Novalnet') }}/js/novalnetSepa.min.js" integrity="sha384-QkYHMI8aQiNPVf1vl7ltWjKceVWcNuZEW6eOINpbfqtgFxXXjuBrJ+rYoH5UQMIE" crossorigin="anonymous"></script>
+<script>
+function isValidAccountHolder(event) {
+    var charCode = (event.which) ? event.which : event.keyCode;
+    if ( !( charCode >= 65 && charCode <= 90 ) && // A-Z
+        !( charCode >= 97 && charCode <= 122 ) && // a-z
+        charCode !== 38 && // &
+        charCode !== 45 && // -
+        charCode !== 46 && // .
+        charCode !== 32 // space
+    ) {
+        event.preventDefault();
+        return false;
+    }
+    return true;
+}
+</script>
+
 {% if paymentMopKey == 'NOVALNET_GUARANTEED_SEPA' and showBirthday == true %}
    <script src="{{plugin_path('Novalnet')}}/js/novalnetGuaranteedPayment.min.js" integrity="sha384-eByiTfbKVGn7pOCGcVoEUulIq6NiLk1hs6N6DHwDxcIeJBUaVwb06il5SRncXLkZ" crossorigin="anonymous"></script>
 {% endif %}
@@ -30,8 +47,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="input-unit">
-                    <input type="text" name="nn_account_holder" id="nn_account_holder"  value="{{AccountHolderName}}" pattern="^[\p{L}\p{M} .\-']+$"
-           oninput="this.value = this.value.replace(/[^\p{L}\p{M} .\-']/gu, '')" required>
+                    <input type="text" name="nn_account_holder" id="nn_account_holder"  value="{{AccountHolderName}}"  onkeypress="return isValidAccountHolder(event)" onkeyup="return isValidAccountHolder(event)" onchange="return isValidAccountHolder(event)" autocomplete="off" required>
                     <label for="nn_account_holder">{{trans("Novalnet::Customize.template_account_holder_label")}}*</label>
                 </div>
             </div>

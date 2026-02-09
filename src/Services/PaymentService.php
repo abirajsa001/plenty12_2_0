@@ -313,8 +313,10 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
         $pluginRepository = pluginApp(PluginRepositoryContract::class);
         $plugin = $pluginRepository->getPluginByName('plentyShopLTS');
         $version = $plugin->version;
+        $versionStage = $plugin->versionStage;
         $this->getLogger(__METHOD__)->error('version updated', [
-            'version' => $version
+            'version' => $version,
+            'versionStage' => $versionStage
         ]);
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
