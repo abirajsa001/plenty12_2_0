@@ -159,10 +159,6 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
     try {
         // Get billing address
         $billingAddress = $this->paymentHelper->getCustomerAddress((int) $basket->customerInvoiceAddressId);
-        if (empty($billingAddress) || empty($billingAddress->country)) {
-            $this->getLogger(__METHOD__)->error('Billing address or country missing');
-            return false;
-        }
         // Customer country ID (INT)
         $customerCountryId = (int) $billingAddress->country->id;
         $isAllowed = in_array($customerCountryId, $allowedCountries, true);

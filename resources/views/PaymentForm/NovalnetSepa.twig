@@ -49,13 +49,13 @@
             <div class="col-12">
                 <div class="input-unit">
                     <input type="text" name="nn_sepa_bic" id="nn_sepa_bic" placeholder="XXXX XX XX XXX" style="text-transform:uppercase;display:none;" onkeypress="return NovalnetUtility.formatBic(event);" onchange="return NovalnetUtility.formatBic(event);">
-                    <label for="nn_sepa_iban">{{trans("Novalnet::Customize.template_bic_label")}}</label>
+                    <label for="nn_sepa_iban">{{trans("Novalnet::Customize.template_bic_label")}}*</label>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-                <a href="#iban_details" data-toggle="collapse">{{trans("Novalnet::PaymentMethod.ibanMandate")}}</a>
+                <a href="#iban_details" data-toggle="collapse" style="color:red">{{trans("Novalnet::PaymentMethod.ibanMandate")}}</a>
                 <div id="iban_details" class="collapse card-body" style="background:whitesmoke;padding:3%;">
                 <div>{{trans("Novalnet::PaymentMethod.ibanDesc")}}</div><br>
                 <div><b>{{trans("Novalnet::PaymentMethod.creditorIdentifier")}} </div></b><br>
