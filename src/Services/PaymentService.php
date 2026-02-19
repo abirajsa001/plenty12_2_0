@@ -1053,6 +1053,9 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
     public function formTransactionComments($transactionData)
     {
         $transactionComments = '';
+        $this->getLogger(__METHOD__)->error('transactionData comments result', [
+            'transactionData' => $transactionData
+        ]);
         // Display the Novalnet transaction Id
         if(!empty($transactionData['tid']) || !empty($transactionData['referenceTid'])) {
             $transactionComments .= $this->paymentHelper->getTranslatedText('nn_tid') . ' ' . (!empty($transactionData['tid']) ? $transactionData['tid'] : $transactionData['referenceTid']);
