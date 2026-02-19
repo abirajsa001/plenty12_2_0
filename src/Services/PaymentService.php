@@ -740,6 +740,9 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
                 $additionalInfo['partner_payment_reference'] = $paymentResponseData['transaction']['partner_payment_reference'];
                 $additionalInfo['service_supplier_id']       = $paymentResponseData['transaction']['service_supplier_id'];
             }
+            if(!empty($paymentResponseData['transaction']['payment_data']['token'])) {
+                $additionalInfo['token']       = $paymentResponseData['transaction']['payment_data']['token'];
+            }
         }
 
         // Add the type param when the refund was executed
@@ -1382,6 +1385,10 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
            $paymentResponseData['transaction']['partner_payment_reference'] = $transactionData['partner_payment_reference'];
            $paymentResponseData['transaction']['service_supplier_id']       = $transactionData['service_supplier_id'];
        }
+       if($transactionData['token']) {
+           $paymentResponseData['transaction']['payment_data']['token']     = $transactionData['token'];
+       }
+
    }
 
      /**

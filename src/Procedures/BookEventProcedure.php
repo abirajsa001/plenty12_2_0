@@ -19,7 +19,7 @@ use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use Plenty\Plugin\Log\Loggable;
 
 /**
- * Class RefundEventProcedure
+ * Class BookEventProcedure
  *
  * @package Novalnet\Procedures
  */
@@ -109,6 +109,10 @@ class BookEventProcedure
             }
             // Get necessary information for the refund process
             $transactionDetails = $this->paymentService->getDetailsFromPaymentProperty($parentOrderId);
+            $this->getLogger(__METHOD__)->error('Booking Event Procedure', [
+                'bookTransactionDetails' => $transactionDetails,
+                'paymentDetails' => $paymentDetails
+            ]);
             if(in_array($transactionDetails['tx_status'], ['PENDING', 'CONFIRMED'])) {
                 // Novalnet access key
                 $privateKey = $this->settingsService->getPaymentSettingsValue('novalnet_private_key');
@@ -118,7 +122,7 @@ class BookEventProcedure
                 $paymentRequestData['custom']['lang'] = strtoupper($orderLanguage);
                 $paymentRequestData['custom']['shop_invoked'] = 1;
                 // Send the payment capture/void call to Novalnet server
-                $paymentResponseData = $this->paymentHelper->executeCurl($paymentRequestData, NovalnetConstants::PAYMENT_REFUND_URL, $privateKey);
+                $paymentResponseData = $this->paymentHelper->executeCurl($paymentRequestData, NovalnetConstants::PAYMENT_URL, $privateKey);
                 $paymentResponseData = array_merge($paymentRequestData, $paymentResponseData);
                 // If refund is successful
                 if($paymentResponseData['result']['status'] == 'SUCCESS' && in_array($paymentResponseData['transaction']['status'], ['PENDING', 'CONFIRMED', 'DEACTIVATED'])) {
