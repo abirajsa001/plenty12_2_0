@@ -246,7 +246,7 @@ class BookEventProcedure
             'responseData' => $paymentResponseData,
         ]);
 
-        $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('refund_message_new_tid', $orderLanguage)), 
+        $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('refund_message_new_tid', $orderLanguage));
 
         // Insert the refund details into Novalnet DB
         $this->paymentService->insertPaymentResponse($paymentResponseData);
