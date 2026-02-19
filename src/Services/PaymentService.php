@@ -106,12 +106,12 @@ class PaymentService
     public function __construct(SettingsService $settingsService,
                                 PaymentHelper $paymentHelper,
                                 WebstoreHelper $webstoreHelper,
-                Response $response,
+                                Response $response,
                                 AddressRepositoryContract $addressRepository,
                                 CountryRepositoryContract $countryRepository,
                                 FrontendSessionStorageFactoryContract $sessionStorage,
                                 TransactionService $transactionService,
-                BasketRepositoryContract $basketRepository,
+                                BasketRepositoryContract $basketRepository,
                                 PaymentRepositoryContract $paymentRepository
                                )
     {

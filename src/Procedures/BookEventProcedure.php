@@ -18,6 +18,8 @@ use Plenty\Modules\Order\Models\OrderType;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use Plenty\Modules\Basket\Models\Basket;
 use Plenty\Modules\Frontend\Services\AccountService;
+use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFactoryContract;
+use Plenty\Modules\Helper\Services\WebstoreHelper;
 use Plenty\Plugin\Log\Loggable;
 
 /**
@@ -58,25 +60,41 @@ class BookEventProcedure
     private $basket;
 
     /**
+     * @var FrontendSessionStorageFactoryContract
+     */
+    private $sessionStorage;
+
+    /**
+     * @var WebstoreHelper
+     */
+    private $webstoreHelper;
+
+    /**
      * Constructor.
      *
      * @param PaymentRepositoryContract $paymentRepository
      * @param PaymentHelper $paymentHelper
      * @param SettingsService $settingsService
      * @param PaymentService $paymentService
+     * @param WebstoreHelper $webstoreHelper
      * @param Basket $basket
+     * @param FrontendSessionStorageFactoryContract $sessionStorage
      */
     public function __construct(PaymentRepositoryContract $paymentRepository,
                                 PaymentHelper $paymentHelper,
                                 SettingsService $settingsService,
                                 PaymentService $paymentService,
-                                Basket $basket)
+                                Basket $basket,
+                                FrontendSessionStorageFactoryContract $sessionStorage,
+                                WebstoreHelper $webstoreHelper)
     {
         $this->paymentRepository = $paymentRepository;
         $this->paymentHelper     = $paymentHelper;
         $this->settingsService   = $settingsService;
         $this->paymentService    = $paymentService;
         $this->basket            = $basket;
+        $this->sessionStorage    = $sessionStorage;
+        $this->webstoreHelper    = $webstoreHelper;
     }
 
     /**
