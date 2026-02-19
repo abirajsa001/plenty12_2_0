@@ -174,6 +174,10 @@ class WebhookController extends Controller
         if($this->eventData['result']['status'] == 'SUCCESS') {
             switch($this->eventType) {
                 case 'PAYMENT':
+                    if ($this->parentTid != $this->orderDetails->tid) {
+                        $this->handleNnZeroAmountBooking();
+                        break;
+                    }
                     return $this->renderTemplate('The Payment has been received');
                 case 'TRANSACTION_CAPTURE':
                 case 'TRANSACTION_CANCEL':
@@ -313,6 +317,7 @@ class WebhookController extends Controller
             $orderObj->orderNo            = $novalnetOrderDetail->orderNo;
             $orderObj->paymentName        = $novalnetOrderDetail->paymentName;
             $orderObj->currency           = $additionalInfo['currency'];
+            $orderObj->zeroAmount         = $additionalInfo['zero_amount'] ?? '0';
             // Get the Novalnet payment methods Id
             $mop = $this->paymentHelper->getPaymentMethodByKey(strtoupper($novalnetOrderDetail->paymentName));
             $orderObj->mopId = $mop[0];
@@ -416,6 +421,26 @@ class WebhookController extends Controller
             }
         }
     }
+
+    /**
+     * Handling communication breakup
+     *
+     * @return string
+     */
+    public function handleNnZeroAmountBooking(): void
+    {
+        if($this->orderDetails->zeroAmount == '1') {
+            // Insert the transaction details into Novalnet DB
+            $this->paymentService->insertPaymentResponse($this->eventData);
+            // Create the payment to the plenty order
+            $this->paymentHelper->createPlentyPayment($this->eventData);
+            // Webhook executed message
+            $webhookComments =  sprintf($this->paymentHelper->getTranslatedText('webhook_zero_amount_booking', $this->orderLanguage),$this->eventData['transaction']['amount'], $this->parentTid);
+            $this->sendWebhookMail($webhookComments);
+            return $this->renderTemplate($webhookComments);
+        }
+    }
+    
 
     /**
      * Handling the Novalnet transaction authorization process
