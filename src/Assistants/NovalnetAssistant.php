@@ -506,40 +506,66 @@ class NovalnetAssistant extends WizardProvider
     */
     public function createOnHoldConfiguration($config)
     {
-         $onHoldSupportedPayments = ['novalnetSepa', 'novalnetCc', 'novalnetInvoice', 'novalnetGuaranteedInvoice', 'novalnetGuaranteedSepa', 'novalnetPaypal', 'novalnetApplepay', 'novalnetGooglepay','novalnetInstalmentInvoice','novalnetInstalmentSepa'];
-         foreach($onHoldSupportedPayments as $onHoldSupportedPayment) {
-            $config['steps'][$onHoldSupportedPayment]['sections'][]['form'] =
-            [
-                $onHoldSupportedPayment . 'PaymentAction' =>
+        $onHoldSupportedPayments = ['novalnetSepa', 'novalnetCc', 'novalnetInvoice', 'novalnetGuaranteedInvoice', 'novalnetGuaranteedSepa', 'novalnetPaypal', 'novalnetApplepay', 'novalnetGooglepay','novalnetInstalmentInvoice','novalnetInstalmentSepa'];
+
+        foreach ($onHoldSupportedPayments as $onHoldSupportedPayment) {
+
+            $listBoxValues = [
                 [
-                    'type'          => 'select',
-                    'defaultValue'  => 0,
-                    'options'       => [
-                                        'name'          => 'NovalnetAssistant.novalnetPaymentActionLabel',
-                                        'listBoxValues' => [
-                                            [
-                                            'caption'   => 'NovalnetAssistant.novalnetOnHoldCaptureLabel',
-                                            'value'     => 0
-                                            ],
-                                            [
-                                            'caption'   => 'NovalnetAssistant.novalnetOnHoldAuthorizeLabel',
-                                            'value'     => 1
-                                            ]
-                                        ]
-                                       ]
+                    'caption' => 'NovalnetAssistant.novalnetOnHoldCaptureLabel',
+                    'value'   => 0
                 ],
-                $onHoldSupportedPayment . 'OnHold' =>
                 [
-                    'type'      => 'text',
-                    'options'   => [
-                                    'name'      => 'NovalnetAssistant.novalnetOnHoldLabel',
-                                    'tooltip'   => 'NovalnetAssistant.novalnetOnHoldTooltip'
-                                   ]
+                    'caption' => 'NovalnetAssistant.novalnetOnHoldAuthorizeLabel',
+                    'value'   => 1
                 ]
             ];
-         }
-         return $config;
+            
+            if(in_array($onHoldSupportedPayment, ['novalnetSepa', 'novalnetCc', 'novalnetApplepay', 'novalnetGooglepay', ])) {
+                $listBoxValues[] = [
+                    'caption' => 'NovalnetAssistant.novalnetZeroAmountLabel',
+                    'value'   => 2
+                ];
+            }
+
+            $config['steps'][$onHoldSupportedPayment]['sections'][]['form'] = [
+                $onHoldSupportedPayment . 'PaymentAction' => [
+                    'type'         => 'select',
+                    'defaultValue' => 0,
+                    'options'      => [
+                        'name'          => 'NovalnetAssistant.novalnetPaymentActionLabel',
+                        'listBoxValues' => $listBoxValues
+                    ]
+                ],
+                $onHoldSupportedPayment . 'OnHold' => [
+                    'type'    => 'text',
+                    'options' => [
+                        'name'    => 'NovalnetAssistant.novalnetOnHoldLabel',
+                        'tooltip' => 'NovalnetAssistant.novalnetOnHoldTooltip'
+                    ]
+                ]
+            ];
+        }
+
+        $config['steps']['novalnetAch']['sections'][]['form'] = [
+            $extraPayment . 'PaymentAction' => [
+                'type'         => 'select',
+                'defaultValue' => 0,
+                'options'      => [
+                    'name' => 'NovalnetAssistant.novalnetPaymentActionLabel',
+                    'listBoxValues' => [
+                        [
+                            'caption' => 'NovalnetAssistant.novalnetZeroAmountLabel',
+                            'value'   => 2
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        return $config;
     }
+
 
     /**
     * Create Guaranteed payment configuration
