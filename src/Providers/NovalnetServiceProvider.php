@@ -404,6 +404,17 @@ class NovalnetServiceProvider extends ServiceProvider
             $instalmentCancelProcedureTitle,
             '\Novalnet\Procedures\InstalmentRemainingCycleCancelEventProcedure@run'
         );
+        // Event for Onhold - Book Process
+        $refundProcedureTitle = [
+            'de' =>  'Novalnet | Buchbetrag',
+            'en' =>  'Novalnet | Book Amount',
+        ];
+        $eventProceduresService->registerProcedure(
+            'Novalnet',
+            ProcedureEntry::EVENT_TYPE_ORDER,
+            $bookProcedureTitle,
+            '\Novalnet\Procedures\BookEventProcedure@run'
+        );
     }
 
     /**

@@ -427,7 +427,7 @@ class WebhookController extends Controller
      *
      * @return string
      */
-    public function handleNnZeroAmountBooking(): void
+    public function handleNnZeroAmountBooking()
     {
         if($this->orderDetails->zeroAmount == '1') {
             // Insert the transaction details into Novalnet DB
