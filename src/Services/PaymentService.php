@@ -315,10 +315,9 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
             'system_url'        => $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl,
             'system_ip'         => $_SERVER['SERVER_ADDR']
         ];
-        $this->getLogger(__METHOD__)->error('zero amount config checking process', [
-            'zeroamount' => $this->settingsService->getPaymentSettingsValue('payment_action', $paymentKeyLower),
-            'paymentKeyLower' => $paymentKeyLower
-        ]);
+        if($this->settingsService->getPaymentSettingsValue('payment_action', $paymentKeyLower) && $this->settingsService->getPaymentSettingsValue('payment_action', $paymentKeyLower) == '2') {
+            $paymentRequestData['transaction']['amount'] = 0;
+        }
         // Send due date to the Novalnet server if it configured
         if(in_array($paymentKey, ['NOVALNET_INVOICE', 'NOVALNET_PREPAYMENT', 'NOVALNET_SEPA'])) {
             $dueDate = $this->settingsService->getPaymentSettingsValue('due_date', $paymentKeyLower);
