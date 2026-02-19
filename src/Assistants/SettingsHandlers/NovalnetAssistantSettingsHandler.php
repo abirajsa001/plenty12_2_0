@@ -84,6 +84,9 @@ class NovalnetAssistantSettingsHandler implements WizardSettingsHandler
                     $novalnetSettings[$paymentMethodKey]['button_type']          = $data[$paymentKey . 'ButtonType'] ?? '';
                     $novalnetSettings[$paymentMethodKey]['button_height']        = $data[$paymentKey . 'ButtonHeight'] ?? '';
                     break;
+                case 'novalnet_ach':
+                    $novalnetSettings[$paymentMethodKey]['payment_action']       = $data[$paymentKey . 'PaymentAction'] ?? '';
+                    break;
             }
         }
         /** @var SettingsService $settingsService */
