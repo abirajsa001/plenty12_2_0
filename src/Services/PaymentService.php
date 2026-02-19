@@ -751,6 +751,16 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
         if(isset($paymentResponseData['credit'])) {
             $additionalInfo['type'] = 'credit';
         }
+
+        $this->getLogger(__METHOD__)->error('payment_action check exception', [
+            'payment_action' => $this->settingsService->getPaymentSettingsValue('payment_action', $paymentResponseData['payment_method']),
+            'payment_method' => $paymentResponseData['payment_method'],
+        ]);
+
+        // Add the zero amount value 
+        if($this->settingsService->getPaymentSettingsValue('payment_action', $paymentResponseData['payment_method']) && $this->settingsService->getPaymentSettingsValue('payment_action', $paymentResponseData['payment_method']) == '2') {
+            $additionalInfo['zero_amount'] = '1';
+        }
         return json_encode($additionalInfo);
     }
 
