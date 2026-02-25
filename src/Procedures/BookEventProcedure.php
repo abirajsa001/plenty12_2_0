@@ -206,23 +206,13 @@ class BookEventProcedure
     ]);
      // Get the customerId
      $account = pluginApp(AccountService::class);
-     $customerId = $account->getAccountContactId();
+     $customerId = $account->getAccountContactId() ?? '1';
 
-
-     /** @var \Plenty\Modules\Frontend\Services\VatService $vatService */
-     $vatService = pluginApp(\Plenty\Modules\Frontend\Services\VatService::class);
-
-     //we have to manipulate the basket because its stupid and doesnt know if its netto or gross
-     if(!count($vatService->getCurrentTotalVats())) {
-         $basket->itemSum = $this->basket->itemSumNet;
-         $basket->shippingAmount = $this->basket->shippingAmountNet;
-         $basket->basketAmount = $this->basket->basketAmountNet;
-     }
 
      $this->getLogger(__METHOD__)->error('Booking Payment account, vat', [
         'customerId' => $customerId,
         'shippingAddress' => $shippingAddress,
-        'basketAmount' => $basket->basketAmount
+        'basketAmount' => $this->basket->basketAmount
     ]);
 
         // Build the Payment Request Parameters
