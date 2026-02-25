@@ -145,6 +145,11 @@ class BookEventProcedure
                 $orderLanguage = $orderProperty->value;
                 }
             }
+            $orderData = pluginApp(OrderRepositoryContract::class)
+            ->findOrderById($order->id);
+    
+        $billingAddress  = $orderData->billingAddress;
+        $shippingAddress = $orderData->deliveryAddress;
 
             // Get necessary information for the refund process
             $transactionDetails = $this->paymentService->getDetailsFromPaymentProperty($parentOrderId);
@@ -152,7 +157,9 @@ class BookEventProcedure
                 'bookTransactionDetails' => $transactionDetails,
                 'paymentDetails' => $paymentDetails,
                 'order' => $order,
-                'invoiceTotal' => (float) $order->amounts[0]->invoiceTotal
+                'invoiceTotal' => (float) $order->amounts[0]->invoiceTotal,
+                'shippingAddress' => $shippingAddress,
+                'billingAddress' => $billingAddress,
             ]);
      $this->basket =  $this->basketRepository->load();
      // Get the customer billing and shipping details
