@@ -173,8 +173,8 @@ class BookEventProcedure
             ]);
      $this->basket =  $this->basketRepository->load();
      // Get the customer billing and shipping details
-     $billingAddressId = $this->basket->customerInvoiceAddressId;
-     $shippingAddressId = $this->basket->customerShippingAddressId;
+     $billingAddressId = $billingAddress->id;
+     $shippingAddressId = $shippingAddress->id;
      // Get the billing and shipping address Id from session during the reinititiate payment process
      if(empty($billingAddressId)) {
          $billingAddressId = $this->sessionStorage->getPlugin()->getValue('nnBillingAddressId');
