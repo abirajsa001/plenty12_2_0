@@ -268,9 +268,9 @@ class BookEventProcedure
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
-            'order_no'          => (float) $order->amounts[0]->invoiceTotal * 100,
+            'order_no'          => $order->id,
             'payment_type'      => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName'])) ?? "DIRECT_DEBIT_SEPA",
-            'amount'            => $this->paymentHelper->convertAmountToSmallerUnit($this->basket->basketAmount),
+            'amount'            => (float) $order->amounts[0]->invoiceTotal * 100,
             'currency'          => $this->basket->currency,
             'system_name'       => 'Plentymarkets',
             'system_version'    => NovalnetConstants::PLUGIN_VERSION,
