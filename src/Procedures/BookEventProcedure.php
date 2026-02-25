@@ -289,7 +289,7 @@ class BookEventProcedure
 
         $this->getLogger(__METHOD__)->error('Booking Payment Response', [
             'responseData' => $paymentResponseData,
-            'paymentName' => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName']));
+            'paymentName' => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName'])),
         ]);
 
         $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('refund_message_new_tid', $orderLanguage));
