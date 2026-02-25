@@ -21,6 +21,7 @@ use Plenty\Modules\Frontend\Services\AccountService;
 use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFactoryContract;
 use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
 use Plenty\Modules\Helper\Services\WebstoreHelper;
+use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
 use Plenty\Plugin\Log\Loggable;
 
 /**
@@ -76,6 +77,11 @@ class BookEventProcedure
     private $basketRepository;
 
     /**
+     * @var OrderRepositoryContract
+     */
+    private $orderRepository;
+
+    /**
      * Constructor.
      *
      * @param PaymentRepositoryContract $paymentRepository
@@ -86,11 +92,13 @@ class BookEventProcedure
      * @param Basket $basket
      * @param FrontendSessionStorageFactoryContract $sessionStorage
      * @param BasketRepositoryContract $basketRepository
+     * @param OrderRepositoryContract $orderRepository
      */
     public function __construct(PaymentRepositoryContract $paymentRepository,
                                 PaymentHelper $paymentHelper,
                                 SettingsService $settingsService,
                                 PaymentService $paymentService,
+                                OrderRepositoryContract $orderRepository,
                                 Basket $basket,
                                 FrontendSessionStorageFactoryContract $sessionStorage,
                                 BasketRepositoryContract $basketRepository,
@@ -104,6 +112,7 @@ class BookEventProcedure
         $this->sessionStorage    = $sessionStorage;
         $this->basketRepository  = $basketRepository;
         $this->webstoreHelper    = $webstoreHelper;
+        $this->orderRepository   = $orderRepository;
     }
 
     /**
@@ -160,6 +169,7 @@ class BookEventProcedure
                 'invoiceTotal' => (float) $order->amounts[0]->invoiceTotal,
                 'shippingAddress' => $shippingAddress,
                 'billingAddress' => $billingAddress,
+                'orderRepository' => $this->orderRepository,
             ]);
      $this->basket =  $this->basketRepository->load();
      // Get the customer billing and shipping details
