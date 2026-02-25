@@ -19,6 +19,7 @@ use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use Plenty\Modules\Basket\Models\Basket;
 use Plenty\Modules\Frontend\Services\AccountService;
 use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFactoryContract;
+use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
 use Plenty\Modules\Helper\Services\WebstoreHelper;
 use Plenty\Plugin\Log\Loggable;
 
@@ -70,6 +71,11 @@ class BookEventProcedure
     private $webstoreHelper;
 
     /**
+     * @var BasketRepositoryContract
+     */
+    private $basketRepository;
+
+    /**
      * Constructor.
      *
      * @param PaymentRepositoryContract $paymentRepository
@@ -79,6 +85,7 @@ class BookEventProcedure
      * @param WebstoreHelper $webstoreHelper
      * @param Basket $basket
      * @param FrontendSessionStorageFactoryContract $sessionStorage
+     * @param BasketRepositoryContract $basketRepository
      */
     public function __construct(PaymentRepositoryContract $paymentRepository,
                                 PaymentHelper $paymentHelper,
@@ -86,6 +93,7 @@ class BookEventProcedure
                                 PaymentService $paymentService,
                                 Basket $basket,
                                 FrontendSessionStorageFactoryContract $sessionStorage,
+                                BasketRepositoryContract $basketRepository,
                                 WebstoreHelper $webstoreHelper)
     {
         $this->paymentRepository = $paymentRepository;
@@ -94,6 +102,7 @@ class BookEventProcedure
         $this->paymentService    = $paymentService;
         $this->basket            = $basket;
         $this->sessionStorage    = $sessionStorage;
+        $this->basketRepository  = $basketRepository;
         $this->webstoreHelper    = $webstoreHelper;
     }
 
@@ -136,6 +145,7 @@ class BookEventProcedure
                 $orderLanguage = $orderProperty->value;
                 }
             }
+
             // Get necessary information for the refund process
             $transactionDetails = $this->paymentService->getDetailsFromPaymentProperty($parentOrderId);
             $this->getLogger(__METHOD__)->error('Booking Event Procedure', [
@@ -144,7 +154,7 @@ class BookEventProcedure
                 'order' => $order,
                 'invoiceTotal' => (float) $order->amounts[0]->invoiceTotal
             ]);
-
+     $this->basket =  $this->basketRepository->load();
      // Get the customer billing and shipping details
      $billingAddressId = $this->basket->customerInvoiceAddressId;
      $shippingAddressId = $this->basket->customerShippingAddressId;
@@ -161,7 +171,8 @@ class BookEventProcedure
         'billingAddressId'      => $billingAddressId,
         'shippingAddressId'     => $shippingAddressId,
         'initialBillingAddress' => $billingAddress,
-        'basketDetails'         => $this->basket
+        'basketDetails'         => $this->basket,
+        'basketRepositoryLoad'  => $this->basketRepository->load()
     ]);
 
      $shippingAddress = $billingAddress;
