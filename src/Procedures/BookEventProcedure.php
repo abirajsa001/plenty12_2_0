@@ -157,8 +157,8 @@ class BookEventProcedure
             $orderData = pluginApp(OrderRepositoryContract::class)
             ->findOrderById($order->id);
     
-        $billingAddress  = $orderData->billingAddress;
-        $shippingAddress = $orderData->deliveryAddress;
+            $billingAddress  = $orderData->billingAddress;
+            $shippingAddress = $orderData->deliveryAddress;
 
             // Get necessary information for the refund process
             $transactionDetails = $this->paymentService->getDetailsFromPaymentProperty($parentOrderId);
@@ -268,6 +268,7 @@ class BookEventProcedure
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
+            'order_no'          => $order->id,
             'payment_type'      => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName'])) ?? "DIRECT_DEBIT_SEPA",
             'amount'            => $this->paymentHelper->convertAmountToSmallerUnit($this->basket->basketAmount),
             'currency'          => $this->basket->currency,
