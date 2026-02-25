@@ -268,7 +268,7 @@ class BookEventProcedure
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
-            'order_no'          => $order->id,
+            'order_no'          => (float) $order->amounts[0]->invoiceTotal * 100,
             'payment_type'      => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName'])) ?? "DIRECT_DEBIT_SEPA",
             'amount'            => $this->paymentHelper->convertAmountToSmallerUnit($this->basket->basketAmount),
             'currency'          => $this->basket->currency,
@@ -294,7 +294,7 @@ class BookEventProcedure
             'orderLanguage' => $orderLanguage,
         ]);
 
-        $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('novalnet_redirect_text', $orderLanguage));
+        $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('webhook_zero_amount_booking', $this->orderLanguage),$paymentResponseData['transaction']['amount'], $paymentResponseData['transaction']['tid']);
 
         $this->getLogger(__METHOD__)->error('Booking Payment booking text', [
             'bookingText' => $paymentResponseData['bookingText']

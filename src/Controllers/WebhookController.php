@@ -430,12 +430,15 @@ class WebhookController extends Controller
     public function handleNnZeroAmountBooking()
     {
         if($this->orderDetails->zeroAmount == '1') {
-            // Insert the transaction details into Novalnet DB
-            $this->paymentService->insertPaymentResponse($this->eventData);
-            // Create the payment to the plenty order
-            $this->paymentHelper->createPlentyPayment($this->eventData);
+
             // Webhook executed message
             $webhookComments =  sprintf($this->paymentHelper->getTranslatedText('webhook_zero_amount_booking', $this->orderLanguage),$this->eventData['transaction']['amount'], $this->parentTid);
+            // Insert the transaction details into Novalnet DB
+            $this->paymentService->insertPaymentResponse($this->eventData);
+            // Booking Message
+            $this->eventData['bookingText'] = $webhookComments;
+            // Create the payment to the plenty order
+            $this->paymentHelper->createPlentyPayment($this->eventData);
             $this->sendWebhookMail($webhookComments);
             return $this->renderTemplate($webhookComments);
         }
