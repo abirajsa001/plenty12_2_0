@@ -175,13 +175,6 @@ class BookEventProcedure
      // Get the customer billing and shipping details
      $billingAddressId = $billingAddress->id;
      $shippingAddressId = $shippingAddress->id;
-     // Get the billing and shipping address Id from session during the reinititiate payment process
-     if(empty($billingAddressId)) {
-         $billingAddressId = $this->sessionStorage->getPlugin()->getValue('nnBillingAddressId');
-     }
-     if(empty($shippingAddressId)) {
-         $shippingAddressId = $this->sessionStorage->getPlugin()->getValue('nnShippingAddressId');
-     }
      $billingAddress = $this->paymentHelper->getCustomerAddress((int) $billingAddressId);
 
      $this->getLogger(__METHOD__)->error('Booking Payment basket details', [
@@ -206,8 +199,11 @@ class BookEventProcedure
     ]);
      // Get the customerId
      $account = pluginApp(AccountService::class);
-     $customerId = $account->getAccountContactId() ?? '1';
+     $this->getLogger(__METHOD__)->error('Booking Payment account, account', [
+        'account' => $account,
+    ]);
 
+     $customerId = $account->getAccountContactId() ?? '1';
 
      $this->getLogger(__METHOD__)->error('Booking Payment account, vat', [
         'customerId' => $customerId,
