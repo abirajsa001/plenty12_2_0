@@ -208,17 +208,15 @@ class BookEventProcedure
      $account = pluginApp(AccountService::class);
      $customerId = $account->getAccountContactId();
 
-     // Get the testMode value
-     $paymentKeyLower = strtolower((string) $paymentKey);
 
      /** @var \Plenty\Modules\Frontend\Services\VatService $vatService */
      $vatService = pluginApp(\Plenty\Modules\Frontend\Services\VatService::class);
 
      //we have to manipulate the basket because its stupid and doesnt know if its netto or gross
      if(!count($vatService->getCurrentTotalVats())) {
-         $basket->itemSum = $basket->itemSumNet;
-         $basket->shippingAmount = $basket->shippingAmountNet;
-         $basket->basketAmount = $basket->basketAmountNet;
+         $basket->itemSum = $this->basket->itemSumNet;
+         $basket->shippingAmount = $this->basket->shippingAmountNet;
+         $basket->basketAmount = $this->basket->basketAmountNet;
      }
 
      $this->getLogger(__METHOD__)->error('Booking Payment account, vat', [
@@ -253,14 +251,9 @@ class BookEventProcedure
         if($paymentRequestData['customer']['billing'] == $paymentRequestData['customer']['shipping']) {
             $paymentRequestData['customer']['shipping']['same_as_billing'] = '1';
         }
-        if(!empty($billingAddress->companyName) && ($this->settingsService->getPaymentSettingsValue('allow_b2b_customer', $paymentKeyLower) == true)) { // Check if company field is given in the shipping address
-            $paymentRequestData['customer']['billing']['company']  = $billingAddress->companyName;
-        }
+
         if(!empty($billingAddress->state)) { // Check if state field is given in the billing address
             $paymentRequestData['customer']['billing']['state']     = $billingAddress->state;
-        }
-        if(!empty($shippingAddress->companyName) && ($this->settingsService->getPaymentSettingsValue('allow_b2b_customer', $paymentKeyLower) == true)) { // Check if company field is given in the shipping address
-            $paymentRequestData['customer']['shipping']['company']  = $shippingAddress->companyName;
         }
         if(!empty($shippingAddress->state)) { // Check if state field is given in the shipping address
             $paymentRequestData['customer']['shipping']['state']    = $shippingAddress->state;
@@ -271,6 +264,21 @@ class BookEventProcedure
             unset($paymentRequestData['customer']['shipping']);
             $paymentRequestData['customer']['shipping']['same_as_billing'] = '1';
         }
+
+        // Get the testMode value
+        $mop = $this->paymentHelper->getPaymentMethodByKey(strtoupper($transactionDetails['paymentName']));
+        $paymentResponseData['mop'] = $mop[0];
+        $this->getLogger(__METHOD__)->error('Booking Payment Mop', [
+            'mop' => $paymentResponseData['mop'],
+        ]);
+
+        $paymentKey = $paymentHelper->getPaymentKeyByMop($paymentResponseData['mop']);
+        $paymentKeyLower = strtolower((string) $paymentKey);
+        $this->getLogger(__METHOD__)->error('Booking Payment PaymentKeyLower', [
+            'paymentkey' => $paymentKey,
+            'paymentkeyLower' => $paymentKeyLower
+        ]);
+
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
