@@ -156,6 +156,14 @@ class BookEventProcedure
          $shippingAddressId = $this->sessionStorage->getPlugin()->getValue('nnShippingAddressId');
      }
      $billingAddress = $this->paymentHelper->getCustomerAddress((int) $billingAddressId);
+
+     $this->getLogger(__METHOD__)->error('Booking Payment basket details', [
+        'billingAddressId'      => $billingAddressId,
+        'shippingAddressId'     => $shippingAddressId,
+        'initialBillingAddress' => $billingAddress,
+        'basketDetails'         => $this->basket
+    ]);
+
      $shippingAddress = $billingAddress;
      if(!empty($shippingAddressId)) {
          $shippingAddress = $this->paymentHelper->getCustomerAddress((int) $shippingAddressId);
