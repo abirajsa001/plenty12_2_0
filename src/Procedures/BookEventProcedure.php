@@ -268,8 +268,8 @@ class BookEventProcedure
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
-            'amount'            => !empty($orderAmount) ? $orderAmount : $this->paymentHelper->convertAmountToSmallerUnit($basket->basketAmount),
-            'currency'          => !empty($this->sessionStorage->getPlugin()->getValue('orderCurrency')) ? $this->sessionStorage->getPlugin()->getValue('orderCurrency') : $basket->currency,
+            'amount'            => $this->paymentHelper->convertAmountToSmallerUnit($this->basket->basketAmount),
+            'currency'          => $this->basket->currency,
             'system_name'       => 'Plentymarkets',
             'system_version'    => NovalnetConstants::PLUGIN_VERSION,
             'system_url'        => $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl,
@@ -285,6 +285,7 @@ class BookEventProcedure
 
         $this->getLogger(__METHOD__)->error('Booking Payment Response', [
             'responseData' => $paymentResponseData,
+            'paymentName' => $this->paymentHelper->getCustomizedTranslatedText('template_' . $paymentKeyLower)
         ]);
 
         $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('refund_message_new_tid', $orderLanguage));
@@ -296,7 +297,7 @@ class BookEventProcedure
         // Insert the refund details into Novalnet DB
         $this->paymentService->insertPaymentResponse($paymentResponseData);
         $this->getLogger(__METHOD__)->error('Booking Payment insertPaymentResponse', [
-            'paymentResponseData' => $paymentResponseData
+            'paymentResponseData' => $paymentResponseData,
         ]);
         // Get the Novalnet payment methods Id
         $mop = $this->paymentHelper->getPaymentMethodByKey(strtoupper($transactionDetails['paymentName']));
