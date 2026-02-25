@@ -253,12 +253,12 @@ class BookEventProcedure
 
         // Get the testMode value
         $mop = $this->paymentHelper->getPaymentMethodByKey(strtoupper($transactionDetails['paymentName']));
-        $paymentResponseData['mop'] = $mop[0];
+        $mopId = $mop[0];
         $this->getLogger(__METHOD__)->error('Booking Payment Mop', [
             'mop' => $paymentResponseData['mop'],
         ]);
 
-        $paymentKey = $paymentHelper->getPaymentKeyByMop($paymentResponseData['mop']);
+        $paymentKey = $this->paymentHelper->getPaymentKeyByMop($mopId);
         $paymentKeyLower = strtolower((string) $paymentKey);
         $this->getLogger(__METHOD__)->error('Booking Payment PaymentKeyLower', [
             'paymentkey' => $paymentKey,
@@ -289,9 +289,15 @@ class BookEventProcedure
 
         $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('refund_message_new_tid', $orderLanguage));
 
+        $this->getLogger(__METHOD__)->error('Booking Payment booking text', [
+            'bookingText' => $paymentResponseData['bookingText']
+        ]);
+
         // Insert the refund details into Novalnet DB
         $this->paymentService->insertPaymentResponse($paymentResponseData);
-
+        $this->getLogger(__METHOD__)->error('Booking Payment insertPaymentResponse', [
+            'paymentResponseData' => $paymentResponseData
+        ]);
         // Get the Novalnet payment methods Id
         $mop = $this->paymentHelper->getPaymentMethodByKey(strtoupper($transactionDetails['paymentName']));
         $paymentResponseData['mop'] = $mop[0];
