@@ -672,7 +672,7 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
             $orderTotalAmount = !empty($refundOrderTotalAmount) ? $refundOrderTotalAmount : $creditOrderTotalAmount;
         }
         $transactionData = [
-            'order_no'         => $paymentResponseData['transaction']['order_no'],
+            'order_no'         => $paymentResponseData['transaction']['order_no'] ?? '',
             'amount'           => !empty($orderTotalAmount) ? $orderTotalAmount : $paymentResponseData['transaction']['amount'],
             'callback_amount'  => !empty($paymentResponseData['transaction']['refund']['amount']) ? $paymentResponseData['transaction']['refund']['amount'] : $paymentResponseData['transaction']['amount'],
             'tid'              => !empty($parentTid) ? $parentTid : (!empty($paymentResponseData['transaction']['tid']) ? $paymentResponseData['transaction']['tid'] : $paymentResponseData['tid']),
