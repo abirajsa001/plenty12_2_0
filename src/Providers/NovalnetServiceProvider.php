@@ -411,7 +411,7 @@ class NovalnetServiceProvider extends ServiceProvider
         ];
         $eventProceduresService->registerProcedure(
             'Novalnet',
-            ProcedureEntry::EVENT_TYPE_ORDER,
+            ProcedureEntry::EVENT_TYPE_ORDER,   
             $bookProcedureTitle,
             '\Novalnet\Procedures\BookEventProcedure@run'
         );

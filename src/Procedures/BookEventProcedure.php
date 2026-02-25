@@ -160,9 +160,14 @@ class BookEventProcedure
      if(!empty($shippingAddressId)) {
          $shippingAddress = $this->paymentHelper->getCustomerAddress((int) $shippingAddressId);
      }
+
      // Get the customer name if the salutation as Person
      $customerName = $this->paymentService->getCustomerName($billingAddress);
-
+     $this->getLogger(__METHOD__)->error('Booking Payment billing, shipping', [
+        'billingAddress' => $billingAddress,
+        'shippingAddress' => $shippingAddress,
+        'customerName' => $customerName
+    ]);
      // Get the customerId
      $account = pluginApp(AccountService::class);
      $customerId = $account->getAccountContactId();
@@ -179,6 +184,12 @@ class BookEventProcedure
          $basket->shippingAmount = $basket->shippingAmountNet;
          $basket->basketAmount = $basket->basketAmountNet;
      }
+
+     $this->getLogger(__METHOD__)->error('Booking Payment account, vat', [
+        'customerId' => $customerId,
+        'shippingAddress' => $shippingAddress,
+        'basketAmount' => $basket->basketAmount
+    ]);
 
         // Build the Payment Request Parameters
         $paymentRequestData = [];
