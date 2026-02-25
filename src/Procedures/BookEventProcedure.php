@@ -268,7 +268,7 @@ class BookEventProcedure
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
-            'payment_type'      => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName'])),
+            'payment_type'      => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName'])) ?? "DIRECT_DEBIT_SEPA",
             'amount'            => $this->paymentHelper->convertAmountToSmallerUnit($this->basket->basketAmount),
             'currency'          => $this->basket->currency,
             'system_name'       => 'Plentymarkets',
@@ -290,9 +290,10 @@ class BookEventProcedure
         $this->getLogger(__METHOD__)->error('Booking Payment Response', [
             'responseData' => $paymentResponseData,
             'paymentName' => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName'])),
+            'orderLanguage' => $orderLanguage,
         ]);
 
-        $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('refund_message_new_tid', $orderLanguage));
+        $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('novalnet_redirect_text', $orderLanguage));
 
         $this->getLogger(__METHOD__)->error('Booking Payment booking text', [
             'bookingText' => $paymentResponseData['bookingText']
