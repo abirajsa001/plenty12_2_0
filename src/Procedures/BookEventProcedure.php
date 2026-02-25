@@ -268,6 +268,7 @@ class BookEventProcedure
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
+            'payment_type'      => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName'])),
             'amount'            => $this->paymentHelper->convertAmountToSmallerUnit($this->basket->basketAmount),
             'currency'          => $this->basket->currency,
             'system_name'       => 'Plentymarkets',
@@ -275,7 +276,7 @@ class BookEventProcedure
             'system_url'        => $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl,
             'system_ip'         => $_SERVER['SERVER_ADDR']
         ];
-        
+
         if($transactionDetails['token']) {
             $paymentRequestData['transaction']['payment_data']['token'] = $transactionDetails['token'];
         }
@@ -288,7 +289,7 @@ class BookEventProcedure
 
         $this->getLogger(__METHOD__)->error('Booking Payment Response', [
             'responseData' => $paymentResponseData,
-            'paymentName' => $this->paymentHelper->getCustomizedTranslatedText('template_' . $paymentKeyLower)
+            'paymentName' => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName']));
         ]);
 
         $paymentResponseData['bookingText'] = sprintf($this->paymentHelper->getTranslatedText('refund_message_new_tid', $orderLanguage));
