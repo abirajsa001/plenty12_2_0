@@ -275,7 +275,10 @@ class BookEventProcedure
             'system_url'        => $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl,
             'system_ip'         => $_SERVER['SERVER_ADDR']
         ];
-
+        
+        if($transactionDetails['token']) {
+            $paymentRequestData['transaction']['payment_data']['token'] = $transactionDetails['token'];
+        }
 
         $this->getLogger(__METHOD__)->error('Booking Payment Request', [
             'requestData' => $paymentRequestData,
