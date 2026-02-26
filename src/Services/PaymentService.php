@@ -661,9 +661,6 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
      */
     public function insertPaymentResponse($paymentResponseData, $parentTid = 0, $refundOrderTotalAmount = 0, $creditOrderTotalAmount = 0)
     {
-        $this->getLogger(__METHOD__)->error('insertPaymentResponse before', [
-            'paymentResponseData' => $paymentResponseData
-        ]);
          // Assign the payment method
         if(empty($paymentResponseData['payment_method'])) {
             $paymentResponseData['payment_method'] = strtolower($this->paymentHelper->getPaymentKey($paymentResponseData['transaction']['payment_type']));
@@ -1133,10 +1130,7 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
      */
     public function getBankDetailsInformation($transactionData)
     {
-        $this->getLogger(__METHOD__)->error('getBankDetailsInformation', [
-            'transactionData' => $transactionData
-        ]);
-        if(in_array($transactionData['paymentName'], ['novalnet_instalment_invoice', 'novalnet_instalment_sepa']) && !empty($transactionData['cycle_amount'])) {
+        if(in_array($transactionData['paymentName'], ['novalnet_instalment_invoice', 'novalnet_instalment_sepa'])) {
             $invoiceComments = PHP_EOL . sprintf($this->paymentHelper->getTranslatedText('transfer_amount_duedate_text'), number_format($transactionData['cycle_amount'] / 100 ,2), $transactionData['currency'], date('Y/m/d', (int)strtotime($transactionData['due_date'])));
             // If the transaction is in On-Hold not displaying the due date
             if($transactionData['tx_status'] == 'ON_HOLD') {

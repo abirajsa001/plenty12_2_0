@@ -616,9 +616,6 @@ class WebhookController extends Controller
         }
         $this->eventData['transaction']['amount'] = 0;
         $this->eventData['transaction']['currency'] = $this->orderDetails->currency;
-        $this->getLogger(__METHOD__)->error('handleInstalmentCancel', [
-            '$this->eventData' => $this->eventData
-        ]);
         // Insert the updated instalment details into Novalnet DB
         $this->paymentService->insertPaymentResponse($this->eventData);
         // Booking Message
