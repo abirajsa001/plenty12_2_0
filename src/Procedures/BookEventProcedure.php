@@ -264,12 +264,13 @@ class BookEventProcedure
             'paymentkey' => $paymentKeyValue,
             'paymentkeyLower' => $paymentKeyLower
         ]);
-
+        $paymentKey = strtoupper($transactionDetails['paymentName']);
+        $paymentMethod = $this->paymentService->getPaymentType($paymentKey);
         // Building the transaction Data
         $paymentRequestData['transaction'] = [
             'test_mode'         => ($this->settingsService->getPaymentSettingsValue('test_mode', $paymentKeyLower) == true) ? 1 : 0,
             'order_no'          => $order->id,
-            'payment_type'      => $this->paymentHelper->getPaymentKey(strtoupper($transactionDetails['paymentName'])) ?? "DIRECT_DEBIT_SEPA",
+            'payment_type'      => $paymentMethod,
             'amount'            => (float) $order->amounts[0]->invoiceTotal * 100,
             'currency'          => $this->basket->currency,
             'system_name'       => 'Plentymarkets',
@@ -287,12 +288,9 @@ class BookEventProcedure
         ]);
         $privateKey = $this->settingsService->getPaymentSettingsValue('novalnet_private_key');
         $paymentResponseData = $this->paymentHelper->executeCurl($paymentRequestData, NovalnetConstants::PAYMENT_URL, $privateKey);
-        $paymentKey = strtoupper($transactionDetails['paymentName']);
-        $paymentName = $this->paymentService->getPaymentType($paymentKey);
+
         $this->getLogger(__METHOD__)->error('Booking Payment Response', [
             'responseData' => $paymentResponseData,
-            'paymentName' => (strtoupper($transactionDetails['paymentName'])),
-            'paymentName1' => $paymentName,
             'orderLanguage' => $orderLanguage,
         ]);
 
