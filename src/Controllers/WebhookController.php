@@ -355,6 +355,9 @@ class WebhookController extends Controller
                return $this->renderTemplate('Transaction mapping failed ' . $orderNo);
             }
         }
+        $this->getLogger(__METHOD__)->error('orderObj novalnetOrderDetails', [
+            'orderObj' => $orderObj,
+        ]);
         return $orderObj;
     }
 
@@ -440,6 +443,9 @@ class WebhookController extends Controller
      */
     public function handleNnZeroAmountBooking()
     {
+        $this->getLogger(__METHOD__)->error('handleNnZeroAmountBooking novalnetOrderDetails', [
+            'orderDetails' => $this->orderDetails,
+        ]);
         if($this->orderDetails->zeroAmount == '1') {
 
             // Webhook executed message
