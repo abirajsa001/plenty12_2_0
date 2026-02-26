@@ -1136,7 +1136,7 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
         $this->getLogger(__METHOD__)->error('getBankDetailsInformation', [
             'transactionData' => $transactionData
         ]);
-        if(in_array($transactionData['paymentName'], ['novalnet_instalment_invoice', 'novalnet_instalment_sepa'])) {
+        if(in_array($transactionData['paymentName'], ['novalnet_instalment_invoice', 'novalnet_instalment_sepa']) && !empty($transactionData['cycle_amount'])) {
             $invoiceComments = PHP_EOL . sprintf($this->paymentHelper->getTranslatedText('transfer_amount_duedate_text'), number_format($transactionData['cycle_amount'] / 100 ,2), $transactionData['currency'], date('Y/m/d', (int)strtotime($transactionData['due_date'])));
             // If the transaction is in On-Hold not displaying the due date
             if($transactionData['tx_status'] == 'ON_HOLD') {
