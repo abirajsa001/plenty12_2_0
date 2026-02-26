@@ -290,7 +290,7 @@ class BookEventProcedure
 
         $this->getLogger(__METHOD__)->error('Booking Payment Response', [
             'responseData' => $paymentResponseData,
-            'paymentName' => $this->paymentService->getPaymentKey(strtoupper($transactionDetails['paymentName'])),
+            'paymentName' => (strtoupper($transactionDetails['paymentName'])),
             'orderLanguage' => $orderLanguage,
         ]);
 
