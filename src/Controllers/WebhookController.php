@@ -170,6 +170,12 @@ class WebhookController extends Controller
         }
         //  Get order language from the order object
         $this->orderLanguage = $this->getOrderLanguage();
+        $this->getLogger(__METHOD__)->error('orderLanguage ', [
+            'orderLanguage' => $this->orderLanguage,
+            'orderDetails'  => $this->orderDetails,
+            'eventType'     => $this->eventType,
+            'parentTid'     => $this->parentTid
+         ]);
         // Handle the individual webhook process
         if($this->eventData['result']['status'] == 'SUCCESS') {
             switch($this->eventType) {
