@@ -614,7 +614,7 @@ class WebhookController extends Controller
         if($this->eventData['instalment']['cancel_type'] == 'REMAINING_CYCLES') {
             $webhookComments = sprintf($this->paymentHelper->getTranslatedText('instalment_remaining_cycle_cancel', $this->orderLanguage), $this->parentTid, date('d-m-Y'));
         }
-        // $this->eventData['transaction']['amount'] = 0;
+        $this->eventData['transaction']['amount'] = 0;
         $this->eventData['transaction']['currency'] = $this->orderDetails->currency;
         $this->getLogger(__METHOD__)->error('handleInstalmentCancel', [
             '$this->eventData' => $this->eventData
