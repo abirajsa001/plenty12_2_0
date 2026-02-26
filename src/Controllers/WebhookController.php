@@ -328,7 +328,7 @@ class WebhookController extends Controller
         }
         if(!empty($novalnetOrderDetail)) {
             $orderObj                     = pluginApp(stdClass::class);
-            $orderObj->tid                = $this->parentTid;
+            $orderObj->tid                = $novalnetOrderDetails->referenceTid ?? $this->parentTid;
             $orderObj->orderTotalAmount   = $novalnetOrderDetail->amount;
             $orderObj->orderPaidAmount    = 0; // Collect paid amount information from the novalnet DB
             $orderObj->orderNo            = $novalnetOrderDetail->orderNo;
