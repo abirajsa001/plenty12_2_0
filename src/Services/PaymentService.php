@@ -1061,6 +1061,10 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
         if(!empty($transactionData['test_mode'])) {
             $transactionComments .= PHP_EOL . $this->paymentHelper->getTranslatedText('test_order');
         }
+        // Display the text if the transaction processed in zero amount
+        if($transactionData['zero_amount'] == '1') {
+            $transactionComments .= PHP_EOL . $this->paymentHelper->getTranslatedText('zero_amount');
+        }
         // Display the text if the transaction was made with Guaranteed payments
         if(in_array($transactionData['paymentName'], ['novalnet_guaranteed_invoice', 'novalnet_guaranteed_sepa', 'novalnet_instalment_invoice', 'novalnet_instalment_sepa']) || in_array($transactionData['payment_id'], ['40','41'])) {
             if(in_array($transactionData['paymentName'], ['novalnet_guaranteed_invoice', 'novalnet_instalment_invoice']) && $transactionData['tx_status'] == 'PENDING') {
