@@ -258,10 +258,10 @@ class BookEventProcedure
             'mop' => $paymentResponseData['mop'],
         ]);
 
-        $paymentKey = $this->paymentHelper->getPaymentKeyByMop($mopId);
-        $paymentKeyLower = strtolower((string) $paymentKey);
+        $paymentKeyValue = $this->paymentHelper->getPaymentKeyByMop($mopId);
+        $paymentKeyLower = strtolower((string) $paymentKeyValue);
         $this->getLogger(__METHOD__)->error('Booking Payment PaymentKeyLower', [
-            'paymentkey' => $paymentKey,
+            'paymentkey' => $paymentKeyValue,
             'paymentkeyLower' => $paymentKeyLower
         ]);
 
@@ -287,10 +287,12 @@ class BookEventProcedure
         ]);
         $privateKey = $this->settingsService->getPaymentSettingsValue('novalnet_private_key');
         $paymentResponseData = $this->paymentHelper->executeCurl($paymentRequestData, NovalnetConstants::PAYMENT_URL, $privateKey);
-
+        $paymentKey = strtoupper($transactionDetails['paymentName']);
+        $paymentName = $this->paymentService->getPaymentType($paymentKey);
         $this->getLogger(__METHOD__)->error('Booking Payment Response', [
             'responseData' => $paymentResponseData,
             'paymentName' => (strtoupper($transactionDetails['paymentName'])),
+            'paymentName1' => $paymentName,
             'orderLanguage' => $orderLanguage,
         ]);
 
