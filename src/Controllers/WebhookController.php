@@ -170,12 +170,6 @@ class WebhookController extends Controller
         }
         //  Get order language from the order object
         $this->orderLanguage = $this->getOrderLanguage();
-        $this->getLogger(__METHOD__)->error('orderLanguage ', [
-            'orderLanguage' => $this->orderLanguage,
-            'orderDetails'  => $this->orderDetails,
-            'eventType'     => $this->eventType,
-            'parentTid'     => $this->parentTid
-         ]);
         // Handle the individual webhook process
         if($this->eventData['result']['status'] == 'SUCCESS') {
             switch($this->eventType) {
@@ -299,17 +293,10 @@ class WebhookController extends Controller
     {
         // Get the order details if the Novalnet transaction is alreay in the Novalnet database
         $novalnetOrderDetails = $this->transactionService->getTransactionData('tid', $this->parentTid);
-        $this->getLogger(__METHOD__)->error('Tid novalnetOrderDetails', [
-            'novalnetOrderDetails' => $novalnetOrderDetails,
-            'tid' => $this->parentTid
-        ]);
         if(empty($novalnetOrderDetails)) {
             $novalnetOrderDetails = $this->transactionService->getTransactionData('orderNo', $this->eventData['transaction']['order_no']);
         }
-        $this->getLogger(__METHOD__)->error('OrderNo novalnetOrderDetails', [
-            'novalnetOrderDetails' => $novalnetOrderDetails,
-            'orderNo' => $this->eventData['transaction']['order_no']
-        ]);
+
         // Use the initial transaction details
         $novalnetOrderDetail = $novalnetOrderDetails[0];
         $additionalInfo = json_decode($novalnetOrderDetail->additionalInfo, true);
@@ -361,9 +348,6 @@ class WebhookController extends Controller
                return $this->renderTemplate('Transaction mapping failed ' . $orderNo);
             }
         }
-        $this->getLogger(__METHOD__)->error('orderObj novalnetOrderDetails', [
-            'orderObj' => $orderObj,
-        ]);
         return $orderObj;
     }
 
@@ -449,9 +433,6 @@ class WebhookController extends Controller
      */
     public function handleNnZeroAmountBooking()
     {
-        $this->getLogger(__METHOD__)->error('handleNnZeroAmountBooking novalnetOrderDetails', [
-            'orderDetails' => $this->orderDetails,
-        ]);
         if($this->orderDetails->zeroAmount == '1') {
 
             // Webhook executed message
@@ -633,7 +614,7 @@ class WebhookController extends Controller
         if($this->eventData['instalment']['cancel_type'] == 'REMAINING_CYCLES') {
             $webhookComments = sprintf($this->paymentHelper->getTranslatedText('instalment_remaining_cycle_cancel', $this->orderLanguage), $this->parentTid, date('d-m-Y'));
         }
-        $this->eventData['transaction']['amount'] = 0;
+        // $this->eventData['transaction']['amount'] = 0;
         $this->eventData['transaction']['currency'] = $this->orderDetails->currency;
         // Insert the updated instalment details into Novalnet DB
         $this->paymentService->insertPaymentResponse($this->eventData);
