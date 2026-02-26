@@ -174,7 +174,7 @@ class WebhookController extends Controller
         if($this->eventData['result']['status'] == 'SUCCESS') {
             switch($this->eventType) {
                 case 'PAYMENT':
-                    if ($this->parentTid != $this->orderDetails->tid) {
+                     if ($this->parentTid != $this->orderDetails->tid) {
                         $this->handleNnZeroAmountBooking();
                         break;
                     }
@@ -434,7 +434,6 @@ class WebhookController extends Controller
     public function handleNnZeroAmountBooking()
     {
         if($this->orderDetails->zeroAmount == '1') {
-
             // Webhook executed message
             $webhookComments =  sprintf($this->paymentHelper->getTranslatedText('webhook_zero_amount_booking', $this->orderLanguage),$this->eventData['transaction']['amount'], $this->parentTid);
             // Insert the transaction details into Novalnet DB

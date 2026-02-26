@@ -159,6 +159,10 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
     try {
         // Get billing address
         $billingAddress = $this->paymentHelper->getCustomerAddress((int) $basket->customerInvoiceAddressId);
+        if (empty($billingAddress) || empty($billingAddress->country)) {
+            $this->getLogger(__METHOD__)->error('Billing address or country missing');
+            return false;
+        }
         // Customer country ID (INT)
         $customerCountryId = (int) $billingAddress->country->id;
         $isAllowed = in_array($customerCountryId, $allowedCountries, true);
@@ -672,7 +676,7 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
             $orderTotalAmount = !empty($refundOrderTotalAmount) ? $refundOrderTotalAmount : $creditOrderTotalAmount;
         }
         $transactionData = [
-            'order_no'         => $paymentResponseData['transaction']['order_no'] ?? '',
+            'order_no'         => $paymentResponseData['transaction']['order_no'],
             'amount'           => !empty($orderTotalAmount) ? $orderTotalAmount : $paymentResponseData['transaction']['amount'],
             'callback_amount'  => !empty($paymentResponseData['transaction']['refund']['amount']) ? $paymentResponseData['transaction']['refund']['amount'] : $paymentResponseData['transaction']['amount'],
             'tid'              => !empty($parentTid) ? $parentTid : (!empty($paymentResponseData['transaction']['tid']) ? $paymentResponseData['transaction']['tid'] : $paymentResponseData['tid']),
@@ -683,9 +687,6 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
         if(in_array($transactionData['payment_name'], ['novalnet_invoice', 'novalnet_prepayment', 'novalnet_multibanco']) ||  (in_array($transactionData['payment_name'], ['novalnet_paypal', 'novalnet_przelewy24']) && in_array($paymentResponseData['transaction']['status'], ['PENDING', 'ON_HOLD'])) || $paymentResponseData['result']['status'] != 'SUCCESS') {
             $transactionData['callback_amount'] = 0;
         }
-        $this->getLogger(__METHOD__)->error('insertPaymentResponse after', [
-            'transactionData' => $transactionData
-        ]);
         $this->transactionService->saveTransaction($transactionData);
     }
 
@@ -757,11 +758,6 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
         if(isset($paymentResponseData['credit'])) {
             $additionalInfo['type'] = 'credit';
         }
-
-        $this->getLogger(__METHOD__)->error('payment_action check exception', [
-            'payment_action' => $this->settingsService->getPaymentSettingsValue('payment_action', $paymentResponseData['payment_method']),
-            'payment_method' => $paymentResponseData['payment_method'],
-        ]);
 
         // Add the zero amount value 
         if($this->settingsService->getPaymentSettingsValue('payment_action', $paymentResponseData['payment_method']) && $this->settingsService->getPaymentSettingsValue('payment_action', $paymentResponseData['payment_method']) == '2') {
@@ -1056,9 +1052,6 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
     public function formTransactionComments($transactionData)
     {
         $transactionComments = '';
-        $this->getLogger(__METHOD__)->error('transactionData comments result', [
-            'transactionData' => $transactionData
-        ]);
         // Display the Novalnet transaction Id
         if(!empty($transactionData['tid']) || !empty($transactionData['referenceTid'])) {
             $transactionComments .= $this->paymentHelper->getTranslatedText('nn_tid') . ' ' . (!empty($transactionData['tid']) ? $transactionData['tid'] : $transactionData['referenceTid']);
