@@ -45,7 +45,7 @@ class RefundFlowAction implements FlowActionContract
         $orderRepo = pluginApp(OrderRepositoryContract::class);
         $order = $orderRepo->findOrderById($orderId);
     
-        pluginApp(\YourPlugin\Services\RefundService::class)
+        pluginApp(\Novalnet\Services\RefundService::class)
             ->processRefund($order);
     }
 
