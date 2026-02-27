@@ -72,11 +72,11 @@ class RefundEventProcedure
      * @param EventProceduresTriggered $eventTriggered
      *
      */
-    public function run(EventProceduresTriggered $eventTriggered)
+    public function run($order)
     {
         try {
             /* @var $order Order */
-            $order = $eventTriggered->getOrder();
+            // $order = $eventTriggered->getOrder();
             $parentOrderId = $order->id;
             // Checking order type and set the parent and child Order Id
             if($order->typeId == OrderType::TYPE_CREDIT_NOTE) {
