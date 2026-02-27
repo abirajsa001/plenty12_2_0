@@ -16,7 +16,7 @@ class RefundFlowAction implements FlowActionContract
 {
     public function getIdentifier(): string
     {
-        return 'yourplugin.refund';
+        return 'Novalnet.refund';
     }
 
     public function getName(): string
