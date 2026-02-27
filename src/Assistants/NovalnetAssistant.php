@@ -952,7 +952,7 @@ class NovalnetAssistant extends WizardProvider
                 $allowedCountries = [];
                 break;
         }
-        countryrepository
+
         /** @var CountryRepositoryContract $countryRepository */
         $countryRepository = pluginApp(CountryRepositoryContract::class);
         $systemLanguage = $this->getLanguage();
