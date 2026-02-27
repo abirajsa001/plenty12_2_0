@@ -16,6 +16,7 @@ use Plenty\Modules\EventProcedures\Events\EventProceduresTriggered;
 use Plenty\Modules\Order\Models\Order;
 use Plenty\Modules\Order\Models\OrderType;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
+use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
 use Plenty\Plugin\Log\Loggable;
 
 /**
@@ -50,37 +51,50 @@ class RefundEventProcedure
     private $paymentService;
 
     /**
+     * @var OrderRepositoryContract
+     */
+    private $orderRepository;
+
+    /**
      * Constructor.
      *
      * @param PaymentRepositoryContract $paymentRepository
      * @param PaymentHelper $paymentHelper
      * @param SettingsService $settingsService
      * @param PaymentService $paymentService
+     * @param OrderRepositoryContract $orderRepository
      */
     public function __construct(PaymentRepositoryContract $paymentRepository,
                                 PaymentHelper $paymentHelper,
                                 SettingsService $settingsService,
+                                OrderRepositoryContract $orderRepository,
                                 PaymentService $paymentService)
     {
         $this->paymentRepository = $paymentRepository;
         $this->paymentHelper     = $paymentHelper;
         $this->settingsService   = $settingsService;
         $this->paymentService    = $paymentService;
+        $this->orderRepository   = $orderRepository;
     }
 
     /**
      * @param EventProceduresTriggered $eventTriggered
      *
      */
-    public function run($order)
+    public function run($orderId)
     {
         try {
-            $this->getLogger(__METHOD__)->error('RefundEventProcedure Triggered', [
+            $this->getLogger(__METHOD__)->error('RefundEventProcedure Triggerd', [
+                'order' => $orderId
+            ]);
+            $order = pluginApp(OrderRepositoryContract::class)
+            ->findOrderById($orderId);
+            $this->getLogger(__METHOD__)->error('RefundEventProcedure order details fetched', [
                 'order' => $order
             ]);
             /* @var $order Order */
             // $order = $eventTriggered->getOrder();
-            $parentOrderId = $order->id;
+            $parentOrderId = $orderId;
             // Checking order type and set the parent and child Order Id
             if($order->typeId == OrderType::TYPE_CREDIT_NOTE) {
                 foreach($order->orderReferences as $orderReference) {

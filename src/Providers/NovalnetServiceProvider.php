@@ -15,7 +15,6 @@ use Novalnet\Assistants\NovalnetAssistant;
 use Novalnet\Methods\NovalnetPaymentAbstract;
 use Novalnet\Constants\NovalnetConstants;
 use Novalnet\Services\SettingsService;
-use Novalnet\Flow\RefundFlowAction;
 use Plenty\Plugin\ServiceProvider;
 use Plenty\Modules\Basket\Events\Basket\AfterBasketCreate;
 use Plenty\Modules\Basket\Events\Basket\AfterBasketChanged;
@@ -34,7 +33,6 @@ use Plenty\Modules\Order\Pdf\Events\OrderPdfGenerationEvent;
 use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
 use Plenty\Modules\Document\Models\Document;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
-use Plenty\Modules\Flow\Contracts\FlowActionRepositoryContract;
 use Plenty\Plugin\Log\Loggable;
 
 /**
@@ -52,7 +50,6 @@ class NovalnetServiceProvider extends ServiceProvider
     public function register()
     {
         $this->getApplication()->register(NovalnetRouteServiceProvider::class);
-        $this->getApplication()->register(RefundFlowAction::class);
     }
 
     /**
