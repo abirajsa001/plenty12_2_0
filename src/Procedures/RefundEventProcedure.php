@@ -75,6 +75,9 @@ class RefundEventProcedure
     public function run($order)
     {
         try {
+            $this->getLogger(__METHOD__)->error('RefundEventProcedure Triggered', [
+                'order' => $order
+            ]);
             /* @var $order Order */
             // $order = $eventTriggered->getOrder();
             $parentOrderId = $order->id;
