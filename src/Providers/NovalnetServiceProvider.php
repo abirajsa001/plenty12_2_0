@@ -15,7 +15,7 @@ use Novalnet\Assistants\NovalnetAssistant;
 use Novalnet\Methods\NovalnetPaymentAbstract;
 use Novalnet\Constants\NovalnetConstants;
 use Novalnet\Services\SettingsService;
-use Novalnet\Flow\FlowAction;
+use Novalnet\Flow\RefundFlowAction;
 use Plenty\Plugin\ServiceProvider;
 use Plenty\Modules\Basket\Events\Basket\AfterBasketCreate;
 use Plenty\Modules\Basket\Events\Basket\AfterBasketChanged;
