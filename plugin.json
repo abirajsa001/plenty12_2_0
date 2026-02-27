@@ -30,9 +30,10 @@
     "dependencies": {
         "guzzlehttp/guzzle": "6.3.*"
     },
-    "serviceProvider": 
-    "Novalnet\\Providers\\NovalnetServiceProvider", 
-    
+    "serviceProvider": [
+    "Novalnet\\Providers\\NovalnetServiceProvider",
+    "Novalnet\\Providers\\EventProcedureServiceProvider"    
+    ],
     "runOnBuild": [
         "Novalnet\\Migrations\\CreateNovalnetPaymentMethods1230",
         "Novalnet\\Migrations\\CreateTransactionTable",
