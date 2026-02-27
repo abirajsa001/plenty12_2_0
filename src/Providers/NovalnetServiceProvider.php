@@ -33,6 +33,7 @@ use Plenty\Modules\Order\Pdf\Events\OrderPdfGenerationEvent;
 use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
 use Plenty\Modules\Document\Models\Document;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
+use Plenty\Modules\Flow\Contracts\FlowActionRepositoryContract;
 use Plenty\Plugin\Log\Loggable;
 
 /**
@@ -50,6 +51,7 @@ class NovalnetServiceProvider extends ServiceProvider
     public function register()
     {
         $this->getApplication()->register(NovalnetRouteServiceProvider::class);
+        $this->getApplication()->register(RefundFlowAction::class);
     }
 
     /**
