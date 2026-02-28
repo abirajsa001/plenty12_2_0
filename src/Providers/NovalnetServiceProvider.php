@@ -50,6 +50,27 @@ class NovalnetServiceProvider extends ServiceProvider
     public function register()
     {
         $this->getApplication()->register(NovalnetRouteServiceProvider::class);
+        $this->getApplication()->bind(
+            EventProceduresService::class,
+            function()
+            {
+                $service = pluginApp(EventProceduresService::class);
+                $this->getLogger(__METHOD__)->error('EventProcedureServiceProvider Triggered', [
+                    'service' => $service
+                ]);
+                $service->registerProcedure(
+                    'novalnet.refund',
+                    'Execute Payment Refund',
+                    function($orderId)
+                    {
+                        pluginApp(\Novalnet\Services\RefundService::class)
+                            ->processRefundByOrderId($orderId);
+                    }
+                );
+
+                return $service;
+            }
+        );
     }
 
     /**
