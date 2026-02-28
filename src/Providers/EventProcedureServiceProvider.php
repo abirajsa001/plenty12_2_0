@@ -26,10 +26,14 @@ class EventProcedureServiceProvider extends ServiceProvider
             'novalnetRefund',
             'Order',
             'Execute Payment Refund',
-            function($orderId)
+            function(array $data)
             {
-                pluginApp(\Novalnet\Services\RefundService::class)
-                    ->processRefundByOrderId((int) $orderId);
+                $orderId = $data['orderId'] ?? 0;
+        
+                if ($orderId > 0) {
+                    pluginApp(\Novalnet\Services\RefundService::class)
+                        ->processRefundByOrderId((int)$orderId);
+                }
             }
         );
     }
