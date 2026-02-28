@@ -12,11 +12,12 @@ use Plenty\Modules\EventProcedures\Models\EventProcedure;
 
 class RefundProcedure
 {
-    public function handle(EventProcedure $eventProcedure)
+    public function run($orderId)
     {
-        $orderId = $eventProcedure->getOrderId();
-
+        if (!$orderId) {
+            return;
+        }
         pluginApp(\Novalnet\Services\RefundService::class)
-            ->processRefundByOrderId($orderId);
+            ->processRefundByOrderId((int) $orderId);
     }
 }
