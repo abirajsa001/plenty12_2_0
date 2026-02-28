@@ -24,7 +24,7 @@ class EventProcedureServiceProvider extends ServiceProvider
         ]);
         $service->registerProcedure(
             'novalnetRefund',
-            EventType::ORDER,
+            'order',
             [
                 'de' => 'Zahlung Rückerstattung ausführen',
                 'en' => 'Execute Payment Refund'
