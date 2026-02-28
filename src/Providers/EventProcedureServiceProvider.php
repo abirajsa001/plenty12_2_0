@@ -17,27 +17,19 @@ class EventProcedureServiceProvider extends ServiceProvider
 {
     use Loggable;
 
-    public function register()
+    public function boot(EventProceduresService $service)
     {
-        $this->getApplication()->bind(
-            EventProceduresService::class,
-            function()
+        $this->getLogger(__METHOD__)->error('EventProcedureServiceProvider Triggered', [
+            'service' => $service
+        ]);
+        $service->registerProcedure(
+            'novalnetRefund',
+            'Order',
+            'Execute Payment Refund',
+            function($orderId)
             {
-                $service = pluginApp(EventProceduresService::class);
-                $this->getLogger(__METHOD__)->error('EventProcedureServiceProvider Triggered', [
-                    'service' => $service
-                ]);
-                $service->registerProcedure(
-                    'novalnet.refund',
-                    'Execute Payment Refund',
-                    function($orderId)
-                    {
-                        pluginApp(\Novalnet\Services\RefundService::class)
-                            ->processRefundByOrderId($orderId);
-                    }
-                );
-
-                return $service;
+                pluginApp(\Novalnet\Services\RefundService::class)
+                    ->processRefundByOrderId((int) $orderId);
             }
         );
     }
