@@ -418,12 +418,9 @@ class NovalnetServiceProvider extends ServiceProvider
         $eventProceduresService->registerProcedure(
             'novalnet.refund',
             'Execute Payment Refund',
-            function ($orderId)
-            {
-                /** @var \Novalnet\Services\RefundService $refundService */
-                $refundService = pluginApp(\Novalnet\Services\RefundService::class);
-                $refundService->processRefundByOrderId($orderId);
-            }
+            [
+                \Novalnet\Procedures\RefundProcedure::class . '@handle'
+            ]
         );
     }
 
