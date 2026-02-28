@@ -24,17 +24,12 @@ class EventProcedureServiceProvider extends ServiceProvider
         ]);
         $service->registerProcedure(
             'novalnetRefund',
-            'Order',
-            'Execute Payment Refund',
-            function(array $data)
-            {
-                $orderId = $data['orderId'] ?? 0;
-        
-                if ($orderId > 0) {
-                    pluginApp(\Novalnet\Services\RefundService::class)
-                        ->processRefundByOrderId((int)$orderId);
-                }
-            }
+            EventType::ORDER,
+            [
+                'de' => 'Zahlung Rückerstattung ausführen',
+                'en' => 'Execute Payment Refund'
+            ],
+            '\Novalnet\Procedures\RefundProcedure@run'
         );
     }
 }
