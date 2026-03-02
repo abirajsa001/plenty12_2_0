@@ -424,7 +424,7 @@ class NovalnetServiceProvider extends ServiceProvider
             'Novalnet',
             ProcedureEntry::EVENT_TYPE_ORDER,
             $refundProcedureTitle,
-            '\Novalnet\Procedures\RefundProcedure@handle'
+            '\Novalnet\Procedures\RefundProcedure@run'
         );
     }
 
