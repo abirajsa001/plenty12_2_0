@@ -416,8 +416,8 @@ class NovalnetServiceProvider extends ServiceProvider
             '\Novalnet\Procedures\BookEventProcedure@run'
         );
         $refundProcedureTitle = [
-            'de' => 'Rückerstattung | Novalnet',
-            'en' => 'Refund Payment | Novalnet',
+            'de' => 'Novalnet | Teilweise Rückerstattung',
+            'en' => 'Novalnet | Partially Refund',
         ];
         $eventProceduresService->registerProcedure(
             'Novalnet',
