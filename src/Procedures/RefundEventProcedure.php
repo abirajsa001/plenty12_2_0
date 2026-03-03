@@ -154,6 +154,9 @@ class RefundEventProcedure
                         $paymentResponseData['childOrderId'] = $childOrderId;
                         $this->paymentHelper->createRefundPayment($paymentDetails, $paymentResponseData, $paymentResponseData['bookingText']);
                     } else {
+                        $this->getLogger(__METHOD__)->error('before createPlentyPayment Triggerd', [
+                            'paymentResponseData' => $paymentResponseData,
+                        ]);
                         // Get the Novalnet payment methods Id
                         $mop = $this->paymentHelper->getPaymentMethodByKey(strtoupper($transactionDetails['paymentName']));
                         $paymentResponseData['mop'] = $mop[0];
