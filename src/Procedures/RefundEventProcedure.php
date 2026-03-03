@@ -135,8 +135,14 @@ class RefundEventProcedure
                     $this->paymentService->insertPaymentResponse($paymentResponseData);
                     // Get refund status it is happened for Full amount or Partially
                     $refundStatus = $this->paymentService->getRefundStatus($paymentResponseData['transaction']['order_no'], $paymentResponseData['transaction']['amount'], $paymentResponseData['transaction']['refund']['amount']);
+                    $this->getLogger(__METHOD__)->error('Extension getRefundStatus Triggerd', [
+                        'refundStatus' => $refundStatus
+                    ]);
                     // Set the refund status it Partial or Full refund
                     $paymentResponseData['refund'] = $refundStatus;
+                    $this->getLogger(__METHOD__)->error('Extension paymentResponseData Triggerd', [
+                        'paymentResponseData' => $paymentResponseData
+                    ]);
                     if($order->typeId == OrderType::TYPE_CREDIT_NOTE) { // Create refund entry in credit note order
                         $paymentResponseData['childOrderId'] = $childOrderId;
                         $this->paymentHelper->createRefundPayment($paymentDetails, $paymentResponseData, $paymentResponseData['bookingText']);

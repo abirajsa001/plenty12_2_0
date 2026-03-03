@@ -1299,6 +1299,11 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
        }
         }
         $refundStatus = ($orderAmount > $totalCallbackDebitAmount) ? 'Partial' : 'Full';
+        $this->getLogger(__METHOD__)->error('Function getRefund Triggerd', [
+            'refundStatus' => $refundStatus,
+            'orderAmount'  => $orderAmount,
+            'totalCallbackDebit' => $totalCallbackDebitAmount,
+        ]);
         return $refundStatus;
     }
 
