@@ -415,16 +415,6 @@ class NovalnetServiceProvider extends ServiceProvider
             $bookProcedureTitle,
             '\Novalnet\Procedures\BookEventProcedure@run'
         );
-        $refundProcedureTitle = [
-            'de' => 'Novalnet | Teilweise Rückerstattung',
-            'en' => 'Novalnet | Partially Refund',
-        ];
-        $eventProceduresService->registerProcedure(
-            'Novalnet',
-            ProcedureEntry::EVENT_TYPE_ORDER,
-            $refundProcedureTitle,
-            '\Novalnet\Procedures\RefundProcedure@run'
-        );
     }
 
     /**
