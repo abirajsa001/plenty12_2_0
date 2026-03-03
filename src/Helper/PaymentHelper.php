@@ -91,7 +91,6 @@ class PaymentHelper
      */
     private $paymentOrderRelationRepository;
 
-
     /**
      * Constructor.
      *
@@ -101,14 +100,13 @@ class PaymentHelper
      * @param PaymentRepositoryContract $paymentRepository
      * @param OrderRepositoryContract $orderRepository
      * @param PaymentOrderRelationRepositoryContract $paymentOrderRelationRepository
-     * @param PaymentService $paymentService
      */
     public function __construct(PaymentMethodRepositoryContract $paymentMethodRepository,
                                 AddressRepositoryContract $addressRepository,
                                 CountryRepositoryContract $countryRepository,
                                 PaymentRepositoryContract $paymentRepository,
                                 OrderRepositoryContract $orderRepository,
-                                PaymentOrderRelationRepositoryContract $paymentOrderRelationRepository,
+                                PaymentOrderRelationRepositoryContract $paymentOrderRelationRepository
                                 )
     {
         $this->paymentMethodRepository          = $paymentMethodRepository;
@@ -437,10 +435,6 @@ class PaymentHelper
     public function createPlentyPayment($paymentResponseData)
     {
         try {
-            $this->getLogger(__METHOD__)->error('paymentResponseData creditNote Triggerd', [
-                'paymentResponseData' => $paymentResponseData
-            ]);
-
             /** @var Payment $payment */
             $payment = pluginApp(\Plenty\Modules\Payment\Models\Payment::class);
             $paymentResponseData['result']['status'] = !empty($paymentResponseData['result']['status']) ? $paymentResponseData['result']['status'] : $paymentResponseData['status'];
@@ -595,29 +589,23 @@ class PaymentHelper
      */
     public function createRefundPayment($payments, $paymentResponseData, $comments)
     {
+        $this->getLogger(__METHOD__)->error('createRefundPayment Triggerd', [
+            'paymentResponseData' => $paymentResponseData,
+        ]);
         // Get the parent order payment Id
         foreach($payments as $payment) {
             $mop = $payment->mopId;
             $currency = $payment->currency;
             $parentPaymentId = $payment->id;
-        }        
-        $this->getLogger(__METHOD__)->error('createRefundPayment Triggerd', [
-            'paymentResponseData' => $paymentResponseData,
-        ]);
-        
-        // $refundStatus = $this->paymentService->getRefundStatus($paymentResponseData['transaction']['order_no'], $paymentResponseData['transaction']['amount'], $paymentResponseData['transaction']['refund']['amount']);
-        // $paymentResponseData['refund'] = $refundStatus;
+        }
         // Refund TID
         $refundTid = !empty($paymentResponseData['transaction']['refund']['tid']) ? $paymentResponseData['transaction']['refund']['tid'] : $paymentResponseData['transaction']['tid'];
-        $this->getLogger(__METHOD__)->error('createRefundPayment Triggerd status', [
-            'paymentResponseData' => $paymentResponseData,
-        ]);
         /** @var Payment $payment */
         $payment = pluginApp(\Plenty\Modules\Payment\Models\Payment::class);
         $payment->updateOrderPaymentStatus = true;
         $payment->mopId = (int) $mop;
         $payment->transactionType = Payment::TRANSACTION_TYPE_BOOKED_POSTING;
-        $payment->status = ($paymentResponseData['refund'] == 'Partial') ? Payment::STATUS_PARTIALLY_REFUNDED : Payment::STATUS_REFUNDED;;
+        $payment->status = Payment::STATUS_CAPTURED;
         $payment->currency = $currency;
         $payment->amount = (float) ($paymentResponseData['transaction']['refund']['amount'] / 100);
         $payment->receivedAt = date('Y-m-d H:i:s');
