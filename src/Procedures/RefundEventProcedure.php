@@ -121,8 +121,14 @@ class RefundEventProcedure
                 $paymentRequestData['custom']['lang'] = strtoupper($orderLanguage);
                 $paymentRequestData['custom']['shop_invoked'] = 1;
                 // Send the payment capture/void call to Novalnet server
+                $this->getLogger(__METHOD__)->error('Extension paymentResponseData Triggerd', [
+                    'paymentRequestData' => $paymentRequestData
+                ]);
                 $paymentResponseData = $this->paymentHelper->executeCurl($paymentRequestData, NovalnetConstants::PAYMENT_REFUND_URL, $privateKey);
                 $paymentResponseData = array_merge($paymentRequestData, $paymentResponseData);
+                $this->getLogger(__METHOD__)->error('Extension paymentResponseData Triggerd', [
+                    'paymentResponseData' => $paymentResponseData
+                ]);
                 // If refund is successful
                 if($paymentResponseData['result']['status'] == 'SUCCESS' && in_array($paymentResponseData['transaction']['status'], ['PENDING', 'CONFIRMED', 'DEACTIVATED'])) {
                     // Booking text
@@ -140,8 +146,9 @@ class RefundEventProcedure
                     ]);
                     // Set the refund status it Partial or Full refund
                     $paymentResponseData['refund'] = $refundStatus;
-                    $this->getLogger(__METHOD__)->error('Extension paymentResponseData Triggerd', [
-                        'paymentResponseData' => $paymentResponseData
+                    $this->getLogger(__METHOD__)->error('Extension refundStatus Triggerd', [
+                        'paymentResponseData' => $paymentResponseData,
+                        'orderType' => $order->typeId
                     ]);
                     if($order->typeId == OrderType::TYPE_CREDIT_NOTE) { // Create refund entry in credit note order
                         $paymentResponseData['childOrderId'] = $childOrderId;
