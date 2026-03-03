@@ -599,14 +599,19 @@ class PaymentHelper
             $currency = $payment->currency;
             $parentPaymentId = $payment->id;
         }
+        $refundStatus = $this->paymentService->getRefundStatus($paymentResponseData['transaction']['order_no'], $paymentResponseData['transaction']['amount'], $paymentResponseData['transaction']['refund']['amount']);
+        $paymentResponseData['refund'] = $refundStatus;
         // Refund TID
         $refundTid = !empty($paymentResponseData['transaction']['refund']['tid']) ? $paymentResponseData['transaction']['refund']['tid'] : $paymentResponseData['transaction']['tid'];
+        $this->getLogger(__METHOD__)->error('createRefundPayment Triggerd', [
+            'paymentResponseData' => $paymentResponseData,
+        ]);
         /** @var Payment $payment */
         $payment = pluginApp(\Plenty\Modules\Payment\Models\Payment::class);
         $payment->updateOrderPaymentStatus = true;
         $payment->mopId = (int) $mop;
         $payment->transactionType = Payment::TRANSACTION_TYPE_BOOKED_POSTING;
-        $payment->status = Payment::STATUS_CAPTURED;
+        $payment->status = ($paymentResponseData['refund'] == 'Partial') ? Payment::STATUS_PARTIALLY_REFUNDED : Payment::STATUS_REFUNDED;;
         $payment->currency = $currency;
         $payment->amount = (float) ($paymentResponseData['transaction']['refund']['amount'] / 100);
         $payment->receivedAt = date('Y-m-d H:i:s');
