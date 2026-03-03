@@ -435,6 +435,10 @@ class PaymentHelper
     public function createPlentyPayment($paymentResponseData)
     {
         try {
+            $this->getLogger(__METHOD__)->error('paymentResponseData creditNote Triggerd', [
+                'paymentResponseData' => $paymentResponseData
+            ]);
+
             /** @var Payment $payment */
             $payment = pluginApp(\Plenty\Modules\Payment\Models\Payment::class);
             $paymentResponseData['result']['status'] = !empty($paymentResponseData['result']['status']) ? $paymentResponseData['result']['status'] : $paymentResponseData['status'];
