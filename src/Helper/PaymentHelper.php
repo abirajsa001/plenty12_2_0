@@ -115,7 +115,7 @@ class PaymentHelper
                                 PaymentRepositoryContract $paymentRepository,
                                 OrderRepositoryContract $orderRepository,
                                 PaymentOrderRelationRepositoryContract $paymentOrderRelationRepository,
-                                PaymentService $paymentService
+                                PaymentService $paymentService,
                                 )
     {
         $this->paymentMethodRepository          = $paymentMethodRepository;
