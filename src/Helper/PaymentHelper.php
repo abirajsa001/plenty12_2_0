@@ -619,7 +619,7 @@ class PaymentHelper
         $refundTid = !empty($paymentResponseData['transaction']['refund']['tid']) ? $paymentResponseData['transaction']['refund']['tid'] : $paymentResponseData['transaction']['tid'];
         $this->getLogger(__METHOD__)->error('createRefundPayment Triggerd status', [
             'paymentResponseData' => $paymentResponseData,
-            '$refundStatus'     => $refundStatus
+            'refundStatus'     => $refundStatus
         ]);
         /** @var Payment $payment */
         $payment = pluginApp(\Plenty\Modules\Payment\Models\Payment::class);
