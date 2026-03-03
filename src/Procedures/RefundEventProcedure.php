@@ -148,7 +148,9 @@ class RefundEventProcedure
                     $paymentResponseData['refund'] = $refundStatus;
                     $this->getLogger(__METHOD__)->error('Extension refundStatus Triggerd', [
                         'paymentResponseData' => $paymentResponseData,
-                        'orderType' => $order->typeId
+                        'orderType' => $order->typeId,
+                        'order'  => $order,
+                        'ordertypenote' => OrderType::TYPE_CREDIT_NOTE
                     ]);
                     if($order->typeId == OrderType::TYPE_CREDIT_NOTE) { // Create refund entry in credit note order
                         $paymentResponseData['childOrderId'] = $childOrderId;
