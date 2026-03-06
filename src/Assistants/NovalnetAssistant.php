@@ -14,8 +14,6 @@ use Novalnet\Helper\PaymentHelper;
 use Plenty\Modules\Wizard\Services\WizardProvider;
 use Plenty\Modules\System\Contracts\WebstoreRepositoryContract;
 use Plenty\Plugin\Application;
-use Plenty\Modules\Order\Shipping\Countries\Contracts\CountryRepositoryContract;
-use Plenty\Modules\System\Contracts\SystemInformationRepositoryContract;
 use Plenty\Plugin\Log\Loggable;
 
 /**
@@ -312,6 +310,8 @@ class NovalnetAssistant extends WizardProvider
         $config = $this->createInvoicePaymentConfiguration($config);
         // Load the Prepayment payment configuration
         $config = $this->createPrepaymentPaymentConfiguration($config);
+         // Load the Cashpayment payment configuration
+        $config = $this->createCashpaymentPaymentConfiguration($config);
         // Load the Allow B2B configuration
         $config = $this->createAllowB2BConfiguration($config);
         // Load the Allow Force configuration
@@ -450,6 +450,30 @@ class NovalnetAssistant extends WizardProvider
     }
 
     /**
+    * Create Slip expiry configuration for Cashpayment
+    *
+    * @param array $config
+    *
+    * @return array
+    */
+    public function createCashpaymentPaymentConfiguration($config)
+    {
+        $config['steps']['novalnetCashpayment']['sections'][]['form'] =
+        [
+            'novalnetCashpaymentDuedate' =>
+            [
+                'type' => 'text',
+                'options' => [
+                                'name'    => 'NovalnetAssistant.novalnetCashpaymentDueDateLabel',
+                                'tooltip' => 'NovalnetAssistant.novalnetCashpaymentDueDateTooltip',
+                                'pattern' => '^[1-9]\d*$'
+                             ]
+            ]
+        ];
+        return $config;
+    }
+
+    /**
     * Create payment additional configuration
     *
     * @param array $config
@@ -458,39 +482,29 @@ class NovalnetAssistant extends WizardProvider
     */
     public function CreateOptionalPaymentDisplayConfiguration($config, $paymentMethodKey)
     {
-        $deliveryCountries = $this->getSpecificDeliveryCountries($paymentMethodKey);
         $config['steps'][$paymentMethodKey]['sections'][]['form'] =
         [
             $paymentMethodKey . 'MinimumOrderAmount' =>
             [
-                'type'          => 'double',
-                'defaultValue'  => 0,
+                'type'      => 'text',
                 'options'   => [
-                                'isPriceInput' => true,
-                                'decimalCount' => 2,
                                 'name'      => 'NovalnetAssistant.novalnetMinimumOrderAmountLabel',
                                 'tooltip'   => 'NovalnetAssistant.novalnetMinimumOrderAmountTooltip'
                                ]
             ],
             $paymentMethodKey . 'MaximumOrderAmount' =>
             [
-                'type'          => 'double',
-                'defaultValue'  => 0,
+                'type'      => 'text',
                 'options'   => [
-                                'isPriceInput' => true,
-                                'decimalCount' => 2,
                                 'name'      => 'NovalnetAssistant.novalnetMaximumOrderAmountLabel',
                                 'tooltip'   => 'NovalnetAssistant.novalnetMaximumOrderAmountTooltip',
                                ]
             ],
             $paymentMethodKey . 'AllowedCountry' =>
             [
-               'type'           => 'checkboxGroup',
-               'defaultValue'   => $this->getDefaultCountries($deliveryCountries),
+               'type'       => 'text',
                'options'    => [
-                                'name'      => 'NovalnetAssistant.novalnetAllowedCountryLabel',
-                                'required' => false,
-                                'checkboxValues' => array_values($deliveryCountries)
+                                'name'      => 'NovalnetAssistant.novalnetAllowedCountryLabel'
                                ]
             ]
         ];
@@ -506,66 +520,63 @@ class NovalnetAssistant extends WizardProvider
     */
     public function createOnHoldConfiguration($config)
     {
-        $onHoldSupportedPayments = ['novalnetSepa', 'novalnetCc', 'novalnetInvoice', 'novalnetGuaranteedInvoice', 'novalnetGuaranteedSepa', 'novalnetPaypal', 'novalnetApplepay', 'novalnetGooglepay','novalnetInstalmentInvoice','novalnetInstalmentSepa'];
-
-        foreach ($onHoldSupportedPayments as $onHoldSupportedPayment) {
-
-            $listBoxValues = [
+         $onHoldSupportedPayments = ['novalnetSepa', 'novalnetCc', 'novalnetInvoice', 'novalnetGuaranteedInvoice', 'novalnetGuaranteedSepa', 'novalnetPaypal', 'novalnetApplepay', 'novalnetGooglepay','novalnetInstalmentInvoice','novalnetInstalmentSepa'];
+         foreach($onHoldSupportedPayments as $onHoldSupportedPayment) {
+            $config['steps'][$onHoldSupportedPayment]['sections'][]['form'] =
+            [
+                $onHoldSupportedPayment . 'PaymentAction' =>
                 [
-                    'caption' => 'NovalnetAssistant.novalnetOnHoldCaptureLabel',
-                    'value'   => 0
+                    'type'          => 'select',
+                    'defaultValue'  => 0,
+                    'options'       => [
+                                        'name'          => 'NovalnetAssistant.novalnetPaymentActionLabel',
+                                        'listBoxValues' => [
+                                            [
+                                            'caption'   => 'NovalnetAssistant.novalnetOnHoldCaptureLabel',
+                                            'value'     => 0
+                                            ],
+                                            [
+                                            'caption'   => 'NovalnetAssistant.novalnetOnHoldAuthorizeLabel',
+                                            'value'     => 1
+                                            ]
+                                        ]
+                                       ]
                 ],
+                $onHoldSupportedPayment . 'OnHold' =>
                 [
-                    'caption' => 'NovalnetAssistant.novalnetOnHoldAuthorizeLabel',
-                    'value'   => 1
+                    'type'      => 'text',
+                    'options'   => [
+                                    'name'      => 'NovalnetAssistant.novalnetOnHoldLabel',
+                                    'tooltip'   => 'NovalnetAssistant.novalnetOnHoldTooltip'
+                                   ]
                 ]
             ];
-            
-            if(in_array($onHoldSupportedPayment, ['novalnetSepa', 'novalnetCc', 'novalnetApplepay', 'novalnetGooglepay', ])) {
-                $listBoxValues[] = [
-                    'caption' => 'NovalnetAssistant.novalnetZeroAmountLabel',
-                    'value'   => 2
-                ];
-            }
+         }
 
-            $config['steps'][$onHoldSupportedPayment]['sections'][]['form'] = [
-                $onHoldSupportedPayment . 'PaymentAction' => [
-                    'type'         => 'select',
-                    'defaultValue' => 0,
-                    'options'      => [
-                        'name'          => 'NovalnetAssistant.novalnetPaymentActionLabel',
-                        'listBoxValues' => $listBoxValues
-                    ]
+
+         $zeroAmountSupportedPayments = ['novalnetSepa', 'novalnetCc', 'novalnetApplepay', 'novalnetGooglepay', 'novalnetAch'];
+         foreach($zeroAmountSupportedPayments as $zeroAmountSupportedPayment) {
+            $config['steps'][$zeroAmountSupportedPayment]['sections'][]['form'] =
+            [
+                $zeroAmountSupportedPayment . 'PaymentAction' =>
+                [
+                    'type'          => 'select',
+                    'defaultValue'  => 0,
+                    'options'       => [
+                                        'name'          => 'NovalnetAssistant.novalnetPaymentActionLabel',
+                                        'listBoxValues' => [
+                                            [
+                                                'caption' => 'NovalnetAssistant.novalnetZeroAmountLabel',
+                                                'value'   => 2
+                                            ]
+                                        ]
+                                       ]
                 ],
-                $onHoldSupportedPayment . 'OnHold' => [
-                    'type'    => 'text',
-                    'options' => [
-                        'name'    => 'NovalnetAssistant.novalnetOnHoldLabel',
-                        'tooltip' => 'NovalnetAssistant.novalnetOnHoldTooltip'
-                    ]
-                ]
             ];
-        }
+         }
 
-        $config['steps']['novalnetAch']['sections'][]['form'] = [
-            $extraPayment . 'PaymentAction' => [
-                'type'         => 'select',
-                'defaultValue' => 0,
-                'options'      => [
-                    'name' => 'NovalnetAssistant.novalnetPaymentActionLabel',
-                    'listBoxValues' => [
-                        [
-                            'caption' => 'NovalnetAssistant.novalnetZeroAmountLabel',
-                            'value'   => 2
-                        ]
-                    ]
-                ]
-            ]
-        ];
-
-        return $config;
+         return $config;
     }
-
 
     /**
     * Create Guaranteed payment configuration
@@ -784,220 +795,5 @@ class NovalnetAssistant extends WizardProvider
                                           ];
         }
         return $googlePayButtonTypes;
-    }
-
-      /**
-     * @return array
-     */
-    protected function getSpecificDeliveryCountries($paymentMethodKey): array
-    {
-        $deliveryCountries = [];
-        switch ($paymentMethodKey) {
-            case 'novalnetSepa':
-            case 'novalnetInvoice':
-            case 'novlanetPrepayment':
-                $allowedCountries = [
-                    1,  // DE 
-                    2,  // AT 
-                    3,  // BE 
-                    5,  // CY 
-                    6,  // CZ 
-                    7,  // DK 
-                    8,  // ES 
-                    9,  // EE 
-                    10, // FR 
-                    11, // FI 
-                    13, // GR 
-                    14, // HU 
-                    15, // IT 
-                    16, // IE 
-                    17, // LU
-                    18, // LV
-                    19, // MT
-                    21, // NL
-                    22, // PT
-                    26, // SK
-                    27, // SI
-                    33, // LT
-                    35, // MC
-                    71, // AD
-                    131, // GI
-                    212, // SM
-                ];
-                break;
-            case 'novalnetGuaranteedInvoice':
-            case 'novalnetGuaranteedSepa':
-            case 'novalnetInstalmentInvoice':
-            case 'novalnetInstalmentSepa':
-                $allowedCountries = [
-                    1,  // DE 
-                    2,  // AT 
-                    3,  // BE 
-                    4,  // CH
-                    5,  // CY 
-                    6,  // CZ 
-                    7,  // DK 
-                    8,  // ES 
-                    9,  // EE 
-                    10, // FR 
-                    11, // FI 
-                    13, // GR 
-                    14, // HU 
-                    15, // IT 
-                    16, // IE 
-                    17, // LU
-                    18, // LV
-                    19, // MT
-                    21, // NL
-                    22, // PT
-                    26, // SK
-                    27, // SI
-                    33, // LT
-                    35, // MC
-                    71, // AD
-                    131, // GI
-                    212, // SM
-                ];
-                break;
-            case 'novalnetIdeal':
-                $allowedCountries = [
-                    21, // NL
-                ];
-                break;
-            case 'novalnetPrzelewy24':
-                $allowedCountries = [
-                    20, // PL
-                ];
-                break;
-            case 'novalnetEps':
-                $allowedCountries = [
-                    2, // AT
-                ];
-                break; 
-            case 'novalnetPostfinanceCard':
-            case 'novalnetPostfinanceEfinance':
-                $allowedCountries = [
-                    4, // CH
-                ];
-                break;    
-            case 'novalnetBancontact':
-                $allowedCountries = [
-                    3, // BE
-                ];
-                break;  
-            case 'novalnetMultibanco':
-                $allowedCountries = [
-                    22, // PT
-                ];
-                break; 
-            case 'novalnetOnlineBankTransfer':
-            case 'novalnetTrustly':
-                $allowedCountries = [
-                    1,  // DE
-                    2,  // AT
-                    7,  // DK
-                    9,  // EE
-                    8,  // ES
-                    11, // FI
-                    12, // UK
-                    33, // LT
-                    18, // LV
-                    21, // NL
-                    20, // NO
-                    24, // SE
-                ];
-                break;    
-            case 'novalnetAlipay':
-                $allowedCountries = [
-                    32, // CN
-                ];
-                break; 
-            case 'novalnetWechatPay':
-                $allowedCountries = [
-                    32, // CN
-                    10, // FR
-                    2,  // AT
-                ];
-                break;        
-            case 'novalnetBlik':
-                $allowedCountries = [
-                    20, // PL
-                ];
-                break;  
-            case 'novalnetPayconiq':
-                $allowedCountries = [
-                    1, // DE
-                    17, // LU
-                ];
-                break;   
-            case 'novalnetMbway':
-                $allowedCountries = [
-                    22, // PT
-                ];
-                break;
-            case 'novalnetAch':
-                $allowedCountries = [
-                    28, // US
-                ];
-                break;
-            case 'novalnetTwint':
-                $allowedCountries = [
-                    4, // CH
-                ];
-                break;       
-            case 'novalnetCc':
-            case 'novalnetApplepay':
-            case 'novalnetGooglepay':
-            default:
-                $allowedCountries = [];
-                break;
-        }
-
-        /** @var CountryRepositoryContract $countryRepository */
-        $countryRepository = pluginApp(CountryRepositoryContract::class);
-        $systemLanguage = $this->getLanguage();
-        $countries = $countryRepository->getCountriesList(null, ['names']);
-        /** @var Country $country */
-        foreach ($countries as $country) {
-            if (count($allowedCountries) <= 0 || array_search($country->id, $allowedCountries) !== false) {
-                $name = $country->names->where('lang', $systemLanguage)->first()->name;
-                $deliveryCountries[$country->id] = [
-                    'caption' => $name ?? $country->name,
-                    'value' => $country->id
-                ];
-            }
-        }
-
-        return $deliveryCountries;
-    }
-
-    /**
-     * Load the active country values
-     */
-    protected function getDefaultCountries($availableCountries = array())
-    {
-
-        /** @var CountryRepositoryContract $countryRepository */
-        $countryRepository = pluginApp(CountryRepositoryContract::class);
-        $activeCountries = $countryRepository->getActiveCountriesList();
-        /** @var Country $country */
-        foreach ($activeCountries as $country) {
-            $this->activeCountries[$country->id] = $country->isoCode2;
-        }
-        
-        return array_column(array_intersect_key($availableCountries, $this->activeCountries), 'value');
-    }
-
-    /**
-     * @return string
-     */
-    protected function getLanguage()
-    {
-
-        /** @var SystemInformationRepositoryContract $systemInformationRepository */
-        $systemInformationRepository = pluginApp(SystemInformationRepositoryContract::class);
-        // TODO: this seems not be the log-in language. Where to get it?
-        $this->language = $systemInformationRepository->loadValue('systemLang');
-        return $this->language;
     }
 }
