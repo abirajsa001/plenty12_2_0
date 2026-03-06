@@ -520,29 +520,11 @@ class NovalnetAssistant extends WizardProvider
     */
     public function createOnHoldConfiguration($config)
 	{
-		$onHoldSupportedPayments = [
-			'novalnetSepa',
-			'novalnetCc',
-			'novalnetInvoice',
-			'novalnetGuaranteedInvoice',
-			'novalnetGuaranteedSepa',
-			'novalnetPaypal',
-			'novalnetApplepay',
-			'novalnetGooglepay',
-			'novalnetInstalmentInvoice',
-			'novalnetInstalmentSepa'
-		];
+		$onHoldSupportedPayments = ['novalnetSepa', 'novalnetCc', 'novalnetInvoice', 'novalnetGuaranteedInvoice', 'novalnetGuaranteedSepa','novalnetPaypal', 'novalnetApplepay', 'novalnetGooglepay', 'novalnetInstalmentInvoice', 'novalnetInstalmentSepa'];
 
-		$zeroAmountSupportedPayments = [
-			'novalnetSepa',
-			'novalnetCc',
-			'novalnetApplepay',
-			'novalnetGooglepay',
-			'novalnetAch'
-		];
+		$zeroAmountSupportedPayments = ['novalnetSepa', 'novalnetCc', 'novalnetApplepay', 'novalnetGooglepay', 'novalnetAch'];
 
 		foreach ($onHoldSupportedPayments as $payment) {
-		
             $listBoxValues = [
                 [
                     'caption' => 'NovalnetAssistant.novalnetOnHoldCaptureLabel',
@@ -553,7 +535,7 @@ class NovalnetAssistant extends WizardProvider
                     'value'   => 1
                 ]
             ];
-            
+
 			// Add Zero Amount option only for supported payments
 			if (in_array($payment, $zeroAmountSupportedPayments)) {
 				$listBoxValues[] = [
