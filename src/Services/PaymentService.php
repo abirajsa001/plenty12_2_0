@@ -150,7 +150,7 @@ public function allowedCountries(Basket $basket, $allowedCountry): bool
 {
     // Normalize allowed countries to INT IDs
     $allowedCountries = [];
-    if (is_array($allowedCountry)) {
+    if (is_array($allowedCountry)) { 
         $allowedCountries = array_map('intval', $allowedCountry);
     } else {
         $allowedCountries = array_map('intval', explode(',', (string) $allowedCountry));

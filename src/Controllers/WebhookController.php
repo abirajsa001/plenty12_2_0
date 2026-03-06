@@ -170,6 +170,11 @@ class WebhookController extends Controller
         }
         //  Get order language from the order object
         $this->orderLanguage = $this->getOrderLanguage();
+        $this->getLogger(__METHOD__)->error('Callback response triggered', [
+            'parentTid' => $this->parentTid,
+            'orderDetailsTid' => $this->orderDetails->tid,
+            'eventData' => $this->eventData
+        ]);
         // Handle the individual webhook process
         if($this->eventData['result']['status'] == 'SUCCESS') {
             switch($this->eventType) {
@@ -313,6 +318,10 @@ class WebhookController extends Controller
         if(!empty($this->eventData['transaction']['order_no']) && !empty($novalnetOrderDetail->orderNo) && (($this->eventData['transaction']['order_no']) != $novalnetOrderDetail->orderNo)) {
             return $this->renderTemplate('Order reference not matching for the order number ' . $orderNo);
         }
+        $this->getLogger(__METHOD__)->error('getOrderDetails referenceTid details', [
+            'referenceTid' => $novalnetOrderDetail->referenceTid,
+            'parentTid' => $this->parentTid
+        ]);
         if(!empty($novalnetOrderDetail)) {
             $orderObj                     = pluginApp(stdClass::class);
             $orderObj->tid                = $novalnetOrderDetail->referenceTid ?? $this->parentTid;
