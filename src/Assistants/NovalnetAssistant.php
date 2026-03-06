@@ -540,19 +540,20 @@ class NovalnetAssistant extends WizardProvider
 			'novalnetGooglepay',
 			'novalnetAch'
 		];
-		
-		$listBoxValues = [
-			[
-				'caption' => 'NovalnetAssistant.novalnetOnHoldCaptureLabel',
-				'value'   => 0
-			],
-			[
-				'caption' => 'NovalnetAssistant.novalnetOnHoldAuthorizeLabel',
-				'value'   => 1
-			]
-		];
-		foreach ($onHoldSupportedPayments as $payment) {
 
+		foreach ($onHoldSupportedPayments as $payment) {
+		
+            $listBoxValues = [
+                [
+                    'caption' => 'NovalnetAssistant.novalnetOnHoldCaptureLabel',
+                    'value'   => 0
+                ],
+                [
+                    'caption' => 'NovalnetAssistant.novalnetOnHoldAuthorizeLabel',
+                    'value'   => 1
+                ]
+            ];
+            
 			// Add Zero Amount option only for supported payments
 			if (in_array($payment, $zeroAmountSupportedPayments)) {
 				$listBoxValues[] = [
