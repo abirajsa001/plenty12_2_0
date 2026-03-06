@@ -556,7 +556,7 @@ class NovalnetAssistant extends WizardProvider
 
          $zeroAmountSupportedPayments = ['novalnetSepa', 'novalnetCc', 'novalnetApplepay', 'novalnetGooglepay', 'novalnetAch'];
          foreach($zeroAmountSupportedPayments as $zeroAmountSupportedPayment) {
-            $config['steps'][$zeroAmountSupportedPayment]['sections'][]['form'] .=
+            $config['steps'][$zeroAmountSupportedPayment]['sections'][]['form'] =
             [
                 $zeroAmountSupportedPayment . 'PaymentAction' =>
                 [
@@ -565,6 +565,14 @@ class NovalnetAssistant extends WizardProvider
                     'options'       => [
                                         'name'          => 'NovalnetAssistant.novalnetPaymentActionLabel',
                                         'listBoxValues' => [
+                                            [
+                                                'caption'   => 'NovalnetAssistant.novalnetOnHoldCaptureLabel',
+                                                'value'     => 0
+                                            ],
+                                            [
+                                                'caption'   => 'NovalnetAssistant.novalnetOnHoldAuthorizeLabel',
+                                                'value'     => 1
+                                            ]
                                             [
                                                 'caption' => 'NovalnetAssistant.novalnetZeroAmountLabel',
                                                 'value'   => 2
