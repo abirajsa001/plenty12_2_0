@@ -572,7 +572,7 @@ class NovalnetAssistant extends WizardProvider
                                             [
                                                 'caption'   => 'NovalnetAssistant.novalnetOnHoldAuthorizeLabel',
                                                 'value'     => 1
-                                            ]
+                                            ],
                                             [
                                                 'caption' => 'NovalnetAssistant.novalnetZeroAmountLabel',
                                                 'value'   => 2
